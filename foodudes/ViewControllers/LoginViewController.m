@@ -20,7 +20,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    // Do any additional setup after loading 
 }
 
 - (void)didReceiveMemoryWarning {
@@ -66,7 +66,7 @@
                 
             } else {
                 NSLog(@"User with facebook logged in!");
-                NSLog(@" user info %@", user.description);
+                //NSLog(@" user info %@", user.description);
                 //user.email=[PFUser currentUser][@"profile"][@"email"];
                 //user[@"name"]=[PFUser currentUser][@"profile"][@"name"];
                 //user[@"gender"]=[PFUser currentUser][@"profile"][@"gender"];

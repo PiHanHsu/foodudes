@@ -17,13 +17,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dzb-nz-yPC">
-                                <rect key="frame" x="138" y="285" width="62" height="30"/>
-                                <state key="normal" title="Login FB">
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="230-Fb-774">
+                                <rect key="frame" x="0.0" y="350" width="393" height="50"/>
+                                <state key="normal" title="Button" image="FBLoginButton@2X.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="loginButtonTouchHandler:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="HV9-Y8-Zuu"/>
+                                    <action selector="loginButtonTouchHandler:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="SdO-je-di0"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -49,7 +49,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Search" id="U9y-qB-UyP"/>
+                    <tabBarItem key="tabBarItem" title="Search" image="search_32x32.png" id="U9y-qB-UyP"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RKd-4j-B8m" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -116,7 +116,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Profile" id="rXy-Zs-YT7"/>
+                    <tabBarItem key="tabBarItem" title="Profile" image="user_32x32.png" id="rXy-Zs-YT7"/>
                     <connections>
                         <outlet property="displayNameLabel" destination="jyU-e2-fa5" id="59x-D0-laM"/>
                         <outlet property="headImageView" destination="0V2-ai-NS1" id="INe-DW-Udj"/>
@@ -196,7 +196,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Add Item" id="CFj-cR-Anf"/>
+                    <tabBarItem key="tabBarItem" title="Add Item" image="plus_32x32.png" id="CFj-cR-Anf"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ijw-GQ-IY7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -241,4 +241,10 @@
             <point key="canvasLocation" x="546" y="121"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="FBLoginButton@2X.png" width="732" height="100"/>
+        <image name="plus_32x32.png" width="32" height="32"/>
+        <image name="search_32x32.png" width="32" height="32"/>
+        <image name="user_32x32.png" width="32" height="32"/>
+    </resources>
 </document>

@@ -10,7 +10,7 @@
 #import <Parse/Parse.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 #import <FacebookSDK/FacebookSDK.h>
-
+#import "infoWindowView.h"
 
 @interface SearchViewController ()
 @property UISearchBar *searchBar;
@@ -22,6 +22,7 @@
 }
 @synthesize gs;
 
+#pragma view Life Cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -31,17 +32,7 @@
     mapView = [GMSMapView mapWithFrame:CGRectZero camera:camera];
     mapView.frame = CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height);
     mapView.myLocationEnabled = YES;
-    //mapView.delegate = self;
-    
-    GMSMarker *marker = [[GMSMarker alloc] init];
-    marker.position = CLLocationCoordinate2DMake(25.023868, 121.528976);
-    //marker.title = @"Pasta Paradise";
-    //marker.snippet = @"Good restaurant!!";
-    marker.icon =[UIImage imageNamed:@"map_marker_Pihan"];
-    marker.appearAnimation = kGMSMarkerAnimationPop;
-    marker.map = mapView;
-
-    
+    mapView.delegate = self;
     self.searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 30)];
     self.searchBar.showsSearchResultsButton=YES;
     self.searchBar.searchBarStyle = UIBarStyleDefault;
@@ -52,7 +43,7 @@
     [self.view insertSubview:mapView atIndex:0];
     //[[self navigationController] setNavigationBarHidden:YES animated:YES];
     gs = [[GCGeocodingService alloc] init];
-
+    [self lodaData];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -60,7 +51,18 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    GMSMarker *marker = [[GMSMarker alloc] init];
+    marker.position = CLLocationCoordinate2DMake(25.023868, 121.528976);
+    //marker.title = @"Pasta Paradise";
+    //marker.snippet = @"Good restaurant!!";
+    marker.icon =[UIImage imageNamed:@"Pihan_Marker80"];
+    marker.appearAnimation = kGMSMarkerAnimationPop;
+    marker.map = mapView;
+}
 
+
+#pragma SearchBar
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
     [self.searchBar resignFirstResponder];
     NSLog(@"%@", self.searchBar.text);
@@ -78,13 +80,71 @@
     options.position = CLLocationCoordinate2DMake(lat, lng);
     options.title = [gs.geocode objectForKey:@"address"];
     options.appearAnimation= kGMSMarkerAnimationPop;
-    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:lat                                                                longitude:lng                                                        zoom:10];
-    //NSLog(@" %f, %f",lat, lng);
-    
+    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:lat                                                                longitude:lng                                                        zoom:15];
     [mapView setCamera:camera];
     options.map=mapView;
-    
 }
+
+
+#pragma loadData
+-(void)lodaData{
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"userRecommendData"];
+    //[query whereKey:@"userName" equalTo:@"PiHan Hsu"];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            // The find succeeded.
+            // Do something with the found objects
+            for (PFObject *object in objects) {
+                //NSLog(@"%@", object[@"lat"]);
+                //NSLog(@"%@", object[@"lng"]);
+                double lat = [object[@"lat"] doubleValue];
+                double lng = [object[@"lng"] doubleValue];
+                
+                GMSMarker * markers = [[GMSMarker alloc]init];
+                markers.position = CLLocationCoordinate2DMake(lat, lng);
+                if([object[@"userName"] isEqualToString:@"PiHan Hsu"]){
+                    markers.icon = [UIImage imageNamed:@"Pihan_Marker80"];
+                }else{
+                 markers.icon = [UIImage imageNamed:@"Fung_Marker80"];
+                }
+                // load image from parse
+                /*
+                 PFUser *currentUser = [PFUser currentUser];
+                 PFFile *imageFile =currentUser[@"FBHeadImage"];
+                 NSData *imagedata = [imageFile getData];
+                 markers.icon =[UIImage imageWithData:imagedata];
+                 */
+                markers.map = mapView;
+            }
+        } else {
+            // Log details of the failure
+            NSLog(@"Error: %@ %@", error, [error userInfo]);
+        }
+    }];
+
+}
+
+
+
+- (BOOL)mapView:(GMSMapView *)mapView1 didTapMarker:(GMSMarker *)marker
+{
+    CGPoint point = [mapView1.projection pointForCoordinate:marker.position];
+    point.y = point.y - 120;
+    GMSCameraUpdate *camera =
+    [GMSCameraUpdate setTarget:[mapView1.projection coordinateForPoint:point]];
+    [mapView1 animateWithCameraUpdate:camera];
+    
+    mapView1.selectedMarker = marker;
+    infoWindowView *view =  [[[NSBundle mainBundle] loadNibNamed:@"infoWindowView" owner:self options:nil] objectAtIndex:0];
+
+     view.center = CGPointMake(self.view.center.x, 180);
+     view.layer.cornerRadius = 10.0f;
+    [mapView1 addSubview:view];
+
+    return YES;
+}
+
 
 
 /*

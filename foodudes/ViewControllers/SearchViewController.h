@@ -10,7 +10,7 @@
 #import <GoogleMaps/GoogleMaps.h>
 #import "GCGeocodingService.h"
 
-@interface SearchViewController : UIViewController < UISearchBarDelegate >
+@interface SearchViewController : UIViewController < UISearchBarDelegate, GMSMapViewDelegate >
 @property (strong,nonatomic) GCGeocodingService *gs;
 
 
