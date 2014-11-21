@@ -18,10 +18,10 @@
 }
 */
 - (IBAction)closeButtonPressed:(id)sender {
- 
     self.hidden = YES;
-    
-    
 }
+
+
+
 
 @end

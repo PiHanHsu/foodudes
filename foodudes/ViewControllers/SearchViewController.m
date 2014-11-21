@@ -14,6 +14,7 @@
 
 @interface SearchViewController ()
 @property UISearchBar *searchBar;
+@property UIView *infoView;
 
 @end
 
@@ -105,6 +106,7 @@
                 markers.position = CLLocationCoordinate2DMake(lat, lng);
                 if([object[@"userName"] isEqualToString:@"PiHan Hsu"]){
                     markers.icon = [UIImage imageNamed:@"Pihan_Marker80"];
+                    
                 }else{
                  markers.icon = [UIImage imageNamed:@"Fung_Marker80"];
                 }
@@ -125,7 +127,7 @@
 
 }
 
-
+#pragma markers
 
 - (BOOL)mapView:(GMSMapView *)mapView1 didTapMarker:(GMSMarker *)marker
 {
@@ -138,13 +140,45 @@
     mapView1.selectedMarker = marker;
     infoWindowView *view =  [[[NSBundle mainBundle] loadNibNamed:@"infoWindowView" owner:self options:nil] objectAtIndex:0];
 
-     view.center = CGPointMake(self.view.center.x, 180);
+    self.infoView = view;
+     view.center = CGPointMake(self.view.center.x, self.view.center.y-70);
      view.layer.cornerRadius = 10.0f;
-    [mapView1 addSubview:view];
+    [mapView1 addSubview:self.infoView];
 
     return YES;
 }
+- (void)mapView:(GMSMapView *)mapView
+didTapAtCoordinate:(CLLocationCoordinate2D)coordinate
+{
+    self.infoView.hidden =YES;
+    NSLog(@"tap on the map!");
+    
+}
+/**
+ * Called when dragging has been initiated on a marker.
+ */
+- (void)mapView:(GMSMapView *)mapView didBeginDraggingMarker:(GMSMarker *)marker{
+    NSLog(@"開始");
+    
+}
 
+/**
+ * Called after dragging of a marker ended.
+ */
+- (void)mapView:(GMSMapView *)mapView didEndDraggingMarker:(GMSMarker *)marker
+{
+    NSLog(@"結束");
+}
+
+/**
+ * Called while a marker is dragged.
+ */
+- (void)mapView:(GMSMapView *)mapView didDragMarker:(GMSMarker *)marker
+{
+
+    NSLog(@"Draging");
+          
+}
 
 
 /*
