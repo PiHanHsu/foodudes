@@ -7,6 +7,7 @@
 //
 
 #import "ProfileViewController.h"
+#import "LoginViewController.h"
 #import <Parse/Parse.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 #import <FacebookSDK/FacebookSDK.h>
@@ -78,8 +79,10 @@
     [PFUser logOut];
     
     // Return to login view controller
-    [self.navigationController popToRootViewControllerAnimated:YES];
-
+    //[self.navigationController popToRootViewControllerAnimated:YES];
+    
+    LoginViewController * rootVC =[self.storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
+    [self presentViewController:rootVC animated:YES completion:nil];
     
 }
 

@@ -31,9 +31,9 @@
 		E8B3CC1D1A1DE0FC00C69275 /* infoWindowView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E8B3CC1C1A1DE0FC00C69275 /* infoWindowView.xib */; };
 		E8B3CC1F1A1DF38600C69275 /* Pihan.png in Resources */ = {isa = PBXBuildFile; fileRef = E8B3CC1E1A1DF38600C69275 /* Pihan.png */; };
 		E8B3CC211A1DF3F500C69275 /* restaurant.png in Resources */ = {isa = PBXBuildFile; fileRef = E8B3CC201A1DF3F500C69275 /* restaurant.png */; };
-		E8B3CC271A1DF8C100C69275 /* CloseButton80@2X.png in Resources */ = {isa = PBXBuildFile; fileRef = E8B3CC261A1DF8C100C69275 /* CloseButton80@2X.png */; };
-		E8B3CC291A1E0AE900C69275 /* FBLoginButton@2X.png in Resources */ = {isa = PBXBuildFile; fileRef = E8B3CC281A1E0AE900C69275 /* FBLoginButton@2X.png */; };
 		E8B3CC2B1A1EE3E500C69275 /* foodudes_logo_去背-2.png in Resources */ = {isa = PBXBuildFile; fileRef = E8B3CC2A1A1EE3E500C69275 /* foodudes_logo_去背-2.png */; };
+		E8B3CC601A1F267300C69275 /* FBLoginButton@2X.png in Resources */ = {isa = PBXBuildFile; fileRef = E8B3CC5E1A1F267300C69275 /* FBLoginButton@2X.png */; };
+		E8B3CC611A1F267300C69275 /* FBLoginButton@3X.png in Resources */ = {isa = PBXBuildFile; fileRef = E8B3CC5F1A1F267300C69275 /* FBLoginButton@3X.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,9 +85,9 @@
 		E8B3CC1C1A1DE0FC00C69275 /* infoWindowView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = infoWindowView.xib; sourceTree = "<group>"; };
 		E8B3CC1E1A1DF38600C69275 /* Pihan.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Pihan.png; sourceTree = "<group>"; };
 		E8B3CC201A1DF3F500C69275 /* restaurant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = restaurant.png; sourceTree = "<group>"; };
-		E8B3CC261A1DF8C100C69275 /* CloseButton80@2X.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CloseButton80@2X.png"; sourceTree = "<group>"; };
-		E8B3CC281A1E0AE900C69275 /* FBLoginButton@2X.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FBLoginButton@2X.png"; sourceTree = "<group>"; };
 		E8B3CC2A1A1EE3E500C69275 /* foodudes_logo_去背-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "foodudes_logo_去背-2.png"; sourceTree = "<group>"; };
+		E8B3CC5E1A1F267300C69275 /* FBLoginButton@2X.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FBLoginButton@2X.png"; sourceTree = "<group>"; };
+		E8B3CC5F1A1F267300C69275 /* FBLoginButton@3X.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FBLoginButton@3X.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -228,8 +228,8 @@
 		E8B3CBFE1A1D8E3C00C69275 /* image */ = {
 			isa = PBXGroup;
 			children = (
-				E8B3CC281A1E0AE900C69275 /* FBLoginButton@2X.png */,
-				E8B3CC261A1DF8C100C69275 /* CloseButton80@2X.png */,
+				E8B3CC5E1A1F267300C69275 /* FBLoginButton@2X.png */,
+				E8B3CC5F1A1F267300C69275 /* FBLoginButton@3X.png */,
 				E8B3CC201A1DF3F500C69275 /* restaurant.png */,
 				E8B3CC1E1A1DF38600C69275 /* Pihan.png */,
 				E8B3CC171A1DDDB300C69275 /* Fung_Marker80@2x.png */,
@@ -336,7 +336,7 @@
 			files = (
 				E8B3CC211A1DF3F500C69275 /* restaurant.png in Resources */,
 				E8B3CC1F1A1DF38600C69275 /* Pihan.png in Resources */,
-				E8B3CC291A1E0AE900C69275 /* FBLoginButton@2X.png in Resources */,
+				E8B3CC601A1F267300C69275 /* FBLoginButton@2X.png in Resources */,
 				E8B3CC121A1DCDF900C69275 /* Pihan_Marker50@2x.png in Resources */,
 				E8985B0B1A1C851C004845DF /* Main.storyboard in Resources */,
 				E8B3CC091A1D951800C69275 /* search_32x32.png in Resources */,
@@ -345,11 +345,11 @@
 				E8B3CC141A1DCDF900C69275 /* Pihan_Marker100@2x.png in Resources */,
 				E8B3CC1D1A1DE0FC00C69275 /* infoWindowView.xib in Resources */,
 				E8985B101A1C851C004845DF /* LaunchScreen.xib in Resources */,
-				E8B3CC271A1DF8C100C69275 /* CloseButton80@2X.png in Resources */,
 				E8B3CC181A1DDDB300C69275 /* Fung_Marker80@2x.png in Resources */,
 				E8B3CC161A1DCE2B00C69275 /* Pihan_Marker80@2x.png in Resources */,
 				E8B3CC0A1A1D951800C69275 /* plus_32x32.png in Resources */,
 				E8985B0D1A1C851C004845DF /* Images.xcassets in Resources */,
+				E8B3CC611A1F267300C69275 /* FBLoginButton@3X.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

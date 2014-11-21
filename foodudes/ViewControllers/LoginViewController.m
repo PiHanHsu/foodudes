@@ -21,7 +21,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [[self navigationController] setNavigationBarHidden:YES animated:YES];
-    // Do any additional setup after loading 
+    // Do any additional setup after loading
+    
+    //UIButton *loginButton =[[UIButton alloc]initWithFrame:CGRectMake(self.view.center.x, self.view.center.y-100, 160, 30.5)];
+    
+    UIButton *loginButton =[[UIButton alloc]init];
+    loginButton.frame= CGRectMake(0, 0, 240, 45.75);
+    loginButton.center = CGPointMake(self.view.center.x
+                                     , self.view.center.y +60);
+    [loginButton addTarget:self action:@selector(loginButtonTouchHandler:) forControlEvents:UIControlEventTouchUpInside];
+    [loginButton setImage:[UIImage imageNamed:@"FBLoginButton"] forState:UIControlStateNormal];
+    //loginButton.backgroundColor =[UIColor redColor];
+    [self.view addSubview:loginButton];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -34,7 +45,7 @@
     
     //Check if user is cached and linked to Facebook, if so, bypass login
     if ([PFUser currentUser] && [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
-    [self _ViewControllerAnimated:NO];
+    [self _ViewControllerAnimated:YES];
     }
 }
 

@@ -150,34 +150,7 @@
 - (void)mapView:(GMSMapView *)mapView
 didTapAtCoordinate:(CLLocationCoordinate2D)coordinate
 {
-    self.infoView.hidden =YES;
-    NSLog(@"tap on the map!");
-    
-}
-/**
- * Called when dragging has been initiated on a marker.
- */
-- (void)mapView:(GMSMapView *)mapView didBeginDraggingMarker:(GMSMarker *)marker{
-    NSLog(@"開始");
-    
-}
-
-/**
- * Called after dragging of a marker ended.
- */
-- (void)mapView:(GMSMapView *)mapView didEndDraggingMarker:(GMSMarker *)marker
-{
-    NSLog(@"結束");
-}
-
-/**
- * Called while a marker is dragged.
- */
-- (void)mapView:(GMSMapView *)mapView didDragMarker:(GMSMarker *)marker
-{
-
-    NSLog(@"Draging");
-          
+    self.infoView.hidden =YES;    
 }
 
 
