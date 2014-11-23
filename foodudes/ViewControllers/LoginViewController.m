@@ -14,6 +14,7 @@
 
 @interface LoginViewController ()
 
+
 @end
 
 @implementation LoginViewController
@@ -22,16 +23,23 @@
     [super viewDidLoad];
     [[self navigationController] setNavigationBarHidden:YES animated:YES];
     // Do any additional setup after loading
+
+    UIImageView *logoImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Logo for login"]];
     
-    //UIButton *loginButton =[[UIButton alloc]initWithFrame:CGRectMake(self.view.center.x, self.view.center.y-100, 160, 30.5)];
+    logoImageView.frame = CGRectMake(0, 0, 280, 210);
+    logoImageView.contentMode = UIViewContentModeScaleToFill;
+    logoImageView.center = CGPointMake(self.view.center.x, self.view.center.y -80);
     
-    UIButton *loginButton =[[UIButton alloc]init];
+    
+    
+       UIButton *loginButton =[[UIButton alloc]init];
     loginButton.frame= CGRectMake(0, 0, 240, 45.75);
     loginButton.center = CGPointMake(self.view.center.x
                                      , self.view.center.y +60);
     [loginButton addTarget:self action:@selector(loginButtonTouchHandler:) forControlEvents:UIControlEventTouchUpInside];
     [loginButton setImage:[UIImage imageNamed:@"FBLoginButton"] forState:UIControlStateNormal];
     //loginButton.backgroundColor =[UIColor redColor];
+    [self.view addSubview:logoImageView];
     [self.view addSubview:loginButton];
 }
 
