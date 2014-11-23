@@ -28,14 +28,14 @@
     
     logoImageView.frame = CGRectMake(0, 0, 280, 210);
     logoImageView.contentMode = UIViewContentModeScaleToFill;
-    logoImageView.center = CGPointMake(self.view.center.x, self.view.center.y -80);
+    logoImageView.center = CGPointMake(self.view.center.x, self.view.center.y*0.6);
     
     
     
        UIButton *loginButton =[[UIButton alloc]init];
     loginButton.frame= CGRectMake(0, 0, 240, 45.75);
     loginButton.center = CGPointMake(self.view.center.x
-                                     , self.view.center.y +60);
+                                     , self.view.center.y*1.3);
     [loginButton addTarget:self action:@selector(loginButtonTouchHandler:) forControlEvents:UIControlEventTouchUpInside];
     [loginButton setImage:[UIImage imageNamed:@"FBLoginButton"] forState:UIControlStateNormal];
     //loginButton.backgroundColor =[UIColor redColor];
