@@ -36,12 +36,10 @@
     if (userProfilePhotoURLString) {
         NSURL *pictureURL = [NSURL URLWithString:userProfilePhotoURLString];
         NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
-        
         [NSURLConnection sendAsynchronousRequest:urlRequest
                                            queue:[NSOperationQueue mainQueue]
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
                                    if (connectionError == nil && data != nil) {
-                                       
                                        self.headImageView.image = [UIImage imageWithData:data];
                                        // Add a nice corner radius to the image
                                        self.headImageView.layer.cornerRadius = 50.0f;
@@ -53,12 +51,23 @@
                                }];
         
 }
+    
+    UILabel *numOfFriends = [[UILabel alloc]initWithFrame:CGRectMake(30, 170, 200, 35)];
+    numOfFriends.text = [NSString stringWithFormat:@"朋友數： %i",5];
+    
+    UILabel *numOfRestaurant = [[UILabel alloc]initWithFrame:CGRectMake(self.view.center.x, 170, 200, 35)];
+    numOfRestaurant.text = [NSString stringWithFormat:@"推薦餐廳數： %i", 10];
+    [self.view addSubview: numOfFriends];
+    [self.view addSubview:numOfRestaurant];
+
+    
+    
+    
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(loadObjects) forControlEvents:UIControlEventValueChanged];
     [self.friendsTableView addSubview:self.refreshControl];
     [self loadObjects];
-
-}
+    }
 #pragma tableView
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -127,14 +136,17 @@
 
 - (void)loadObjects {
     
-    [self.refreshControl beginRefreshing]; //__block MainTableViewController *__self = self;
-    PFQuery *query = [PFUser query];
+    [self.refreshControl beginRefreshing];
+     PFQuery *query = [PFUser query];
     [query findObjectsInBackgroundWithBlock:^(NSArray *results, NSError *error) {
       self.dataArray = [results mutableCopy];
       [self.friendsTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
         }];
-    
     [self.refreshControl endRefreshing];
+    
+    
+
+    
     
 }
 
