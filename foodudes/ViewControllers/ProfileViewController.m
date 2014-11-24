@@ -15,6 +15,8 @@
 @interface ProfileViewController ()<UITableViewDataSource, UITableViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *friendsTableView;
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
+@property (nonatomic, strong) NSMutableArray *dataArray;
 
 @end
 
@@ -29,8 +31,6 @@
         self.displayNameLabel.text = name;
     }
 
-    
-    
     NSString *userProfilePhotoURLString = [PFUser currentUser][@"profile"][@"pictureURL"];
     // Download the user's facebook profile picture
     if (userProfilePhotoURLString) {
@@ -47,30 +47,17 @@
                                        self.headImageView.layer.cornerRadius = 50.0f;
                                        self.headImageView.layer.masksToBounds = YES;
                                        
-                                       
-                                       //Try to put the head to customMarker, not work yet!
-                                       
-                                       /*
-                                        CustomMarker *userMarker = [CustomMarker customView] ;
-                                        userMarker.markerView.image= [UIImage imageWithData:data];
-                                        self.headImageView.image =userMarker.markerImage;
-                                        */
-                                       
-                                       //Save FB image to Parse. Done!
-                                       /*
-                                        NSData *imageData = UIImageJPEGRepresentation(userMarker.markerImage, 0);
-                                        PFFile *imageFile = [PFFile fileWithName:@"userMarker.png" data:imageData];
-                                        PFUser *currentUser =[PFUser currentUser];
-                                        currentUser[@"userMarker"] =imageFile;
-                                        [currentUser saveInBackground];
-                                        */
-                                       
                                    } else {
                                        NSLog(@"Failed to load profile photo.");
                                    }
                                }];
-
+        
 }
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(loadObjects) forControlEvents:UIControlEventValueChanged];
+    [self.friendsTableView addSubview:self.refreshControl];
+    [self loadObjects];
+
 }
 #pragma tableView
 
@@ -81,7 +68,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 10;
+    return self.dataArray.count;
     
 }
 
@@ -96,72 +83,61 @@
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *requestIdentifier = @"HelloCell";
-    static NSString *requestIdentifier2 = @"HelloCell2";
-    
-    UITableViewCell *cell;
-    switch (indexPath.section) {
-        case 0:{
-            cell = [tableView dequeueReusableCellWithIdentifier:requestIdentifier];
-            if (!cell) {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:requestIdentifier];
-                cell.textLabel.textColor = [UIColor whiteColor];
-                cell.backgroundColor = [UIColor clearColor];
-                cell.selectionStyle=UITableViewCellSelectionStyleNone;
-                cell.detailTextLabel.textColor = [UIColor colorWithRed:241.0f/255.0f green:244.0f/255.0f blue:239.0f/255.0f alpha:1.0f];
-                cell.textLabel.font = [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size: 20.f];
-                cell.detailTextLabel.font = [UIFont fontWithName:@"Avenir-LightOblique" size: 12.f];
-                
-            }
-        }
-            break;
-        case 1:{
-            cell = [tableView dequeueReusableCellWithIdentifier:requestIdentifier2];
-            if (!cell) {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:requestIdentifier2];
-                cell.textLabel.textColor = [UIColor whiteColor];
-                cell.backgroundColor = [UIColor clearColor];
-                cell.selectionStyle=UITableViewCellSelectionStyleNone;
-                cell.detailTextLabel.textColor = [UIColor colorWithRed:241.0f/255.0f green:244.0f/255.0f blue:239.0f/255.0f alpha:1.0f];
-                cell.textLabel.font = [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size: 20.f];
-                cell.detailTextLabel.font = [UIFont fontWithName:@"Avenir-LightOblique" size: 12.f];
-                
-            }
-        }
-        default:
-            break;
-    }
-    /*
-    cell.textLabel.text = dataSource [indexPath.row];
-    cell.detailTextLabel.text = detailDataSource [indexPath.row];
-    
-    NSString *title;
-    switch (indexPath.section) {
-        case 0:
-            title = @"download";
-            break;
-        case 1:
-            title =@"upload";
-            break;
-            
-        default:
-            break;
+    NSString *CellIdentifier = @"CodeTableViewCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    } else {
+        NSLog(@"I have been initialize. Row = %li", (long)indexPath.row);
     }
     
-    UIButton *button= [[ UIButton alloc] initWithFrame:CGRectMake(220, 15, 80, 30)];
-    [button setTitle:title forState:UIControlStateNormal];
-    button.titleLabel.font = [UIFont fontWithName:@"AppleSDGothicNeo-Bold" size: 14.f];
-    [button setBackgroundColor:[UIColor clearColor]];
-    [button addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    button.tag =indexPath.row;
-    //button.layer.cornerRadius = 25.0f;
-    [button.layer setCornerRadius:4.0f];
-    [button.layer setBorderColor:[[UIColor whiteColor]CGColor]];
-    [button.layer setBorderWidth:1.0f];
-    [cell.contentView addSubview:button];
-    */
+    NSDictionary *eachDictionaryInfo = [self.dataArray objectAtIndex:indexPath.row];
+    NSDictionary *profileDictionary = [eachDictionaryInfo objectForKey:@"profile"];
+    
+    
+    NSString *userProfilePhotoURLString = [profileDictionary objectForKey:@"pictureURL"];
+    // Download the user's facebook profile picture
+    if (userProfilePhotoURLString) {
+        NSURL *pictureURL = [NSURL URLWithString:userProfilePhotoURLString];
+        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
+        
+        [NSURLConnection sendAsynchronousRequest:urlRequest
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                                   if (connectionError == nil && data != nil) {
+                                       
+                                       cell.textLabel.text = [profileDictionary objectForKey:@"name"];
+                                       cell.detailTextLabel.text = [profileDictionary objectForKey:@"email"];
+
+                                       UIImageView * friendsImage = [[UIImageView alloc]initWithFrame:CGRectMake(5, 5, 50, 50)];
+                                       friendsImage.image =[UIImage imageWithData:data] ;
+                                       friendsImage.layer.cornerRadius = 25.0f;
+                                       friendsImage.layer.masksToBounds =YES;
+                                       
+                                       [cell.contentView addSubview:friendsImage];
+                                       
+                                    } else {
+                                       NSLog(@"Failed to load profile photo.");
+                                   }
+                               }];
+    }
+
     return cell;
 }
+
+- (void)loadObjects {
+    
+    [self.refreshControl beginRefreshing]; //__block MainTableViewController *__self = self;
+    PFQuery *query = [PFUser query];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *results, NSError *error) {
+      self.dataArray = [results mutableCopy];
+      [self.friendsTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }];
+    
+    [self.refreshControl endRefreshing];
+    
+}
+
 
 #pragma logout
 
