@@ -101,6 +101,10 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="7tq-Jh-40X">
                                 <rect key="frame" x="16" y="210" width="375" height="341"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="vyJ-iQ-cbo" id="SJM-Lr-O8m"/>
+                                    <outlet property="delegate" destination="vyJ-iQ-cbo" id="feY-uI-wUl"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -108,6 +112,7 @@
                     <tabBarItem key="tabBarItem" title="Profile" image="user_32x32.png" id="rXy-Zs-YT7"/>
                     <connections>
                         <outlet property="displayNameLabel" destination="jyU-e2-fa5" id="59x-D0-laM"/>
+                        <outlet property="friendsTableView" destination="7tq-Jh-40X" id="Kyh-Zd-kJE"/>
                         <outlet property="headImageView" destination="0V2-ai-NS1" id="INe-DW-Udj"/>
                     </connections>
                 </viewController>
