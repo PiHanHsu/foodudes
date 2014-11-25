@@ -17,7 +17,6 @@
 @property (weak, nonatomic) IBOutlet UITableView *friendsTableView;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 @property (nonatomic, strong) NSMutableArray *dataArray;
-@property NSString *test;
 
 
 @end
