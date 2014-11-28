@@ -151,6 +151,10 @@
     
 }
 
+- (IBAction)getToken:(id)sender {
+    NSString *token =[FBSession activeSession].accessTokenData.accessToken;
+    NSLog(@"FB token: %@" ,token);
+}
 
 #pragma logout
 

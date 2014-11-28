@@ -42,7 +42,6 @@
     
     [self.view addSubview:self.searchBar];
     [self.view insertSubview:mapView atIndex:0];
-    //[[self navigationController] setNavigationBarHidden:YES animated:YES];
     gs = [[GCGeocodingService alloc] init];
     [self lodaData];
 }
