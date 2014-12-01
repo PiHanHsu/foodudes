@@ -11,6 +11,7 @@
 #import <Parse/Parse.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 #import <FacebookSDK/FacebookSDK.h>
+#import "AFNetworking.h"
 
 @interface ProfileViewController ()<UITableViewDataSource, UITableViewDelegate>
 
@@ -61,9 +62,6 @@
     [self.view addSubview: numOfFriends];
     [self.view addSubview:numOfRestaurant];
 
-    
-    
-    
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(loadObjects) forControlEvents:UIControlEventValueChanged];
     [self.friendsTableView addSubview:self.refreshControl];
@@ -146,15 +144,9 @@
     [self.refreshControl endRefreshing];
     
     
-
-    
-    
 }
 
-- (IBAction)getToken:(id)sender {
-    NSString *token =[FBSession activeSession].accessTokenData.accessToken;
-    NSLog(@"FB token: %@" ,token);
-}
+
 
 #pragma logout
 

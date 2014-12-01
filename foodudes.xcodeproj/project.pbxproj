@@ -21,6 +21,7 @@
 		E88225311A284D180091B48A /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E88225261A284D180091B48A /* AFURLConnectionOperation.m */; };
 		E88225321A284D180091B48A /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E88225281A284D180091B48A /* AFXMLRequestOperation.m */; };
 		E88225331A284D180091B48A /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = E882252A1A284D180091B48A /* UIImageView+AFNetworking.m */; };
+		E88225361A284F280091B48A /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = E88225351A284F280091B48A /* User.m */; };
 		E8985B021A1C851C004845DF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E8985B011A1C851C004845DF /* main.m */; };
 		E8985B051A1C851C004845DF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E8985B041A1C851C004845DF /* AppDelegate.m */; };
 		E8985B081A1C851C004845DF /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8985B071A1C851C004845DF /* ViewController.m */; };
@@ -85,6 +86,8 @@
 		E88225281A284D180091B48A /* AFXMLRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFXMLRequestOperation.m; sourceTree = "<group>"; };
 		E88225291A284D180091B48A /* UIImageView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+AFNetworking.h"; sourceTree = "<group>"; };
 		E882252A1A284D180091B48A /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
+		E88225341A284F280091B48A /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
+		E88225351A284F280091B48A /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		E8985AFC1A1C851C004845DF /* foodudes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = foodudes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8985B001A1C851C004845DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E8985B011A1C851C004845DF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -256,6 +259,8 @@
 		E8985B251A1C8577004845DF /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E88225341A284F280091B48A /* User.h */,
+				E88225351A284F280091B48A /* User.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -490,6 +495,7 @@
 				E8985B051A1C851C004845DF /* AppDelegate.m in Sources */,
 				E8985B301A1C8AE3004845DF /* ProfileViewController.m in Sources */,
 				E8985B021A1C851C004845DF /* main.m in Sources */,
+				E88225361A284F280091B48A /* User.m in Sources */,
 				E882252F1A284D180091B48A /* AFNetworkActivityIndicatorManager.m in Sources */,
 				E882252C1A284D180091B48A /* AFHTTPRequestOperation.m in Sources */,
 				E88225321A284D180091B48A /* AFXMLRequestOperation.m in Sources */,
