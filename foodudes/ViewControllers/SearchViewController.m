@@ -45,6 +45,7 @@
     [self.view insertSubview:mapView atIndex:0];
     gs = [[GCGeocodingService alloc] init];
     [self lodaData];
+    [self loadDateForInfoView];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -138,14 +139,16 @@
     [mapView1 animateWithCameraUpdate:camera];
     
     mapView1.selectedMarker = marker;
-    infoWindowView *view =  [[[NSBundle mainBundle] loadNibNamed:@"infoWindowView" owner:self options:nil] objectAtIndex:0];
-
-    self.infoView = view;
-     //view.center = CGPointMake(self.view.center.x, self.view.center.y-70);
-     view.layer.cornerRadius = 10.0f;
-    //[mapView1 addSubview:self.infoView];
-    [self.view addSubview:self.infoView];
-    [self willShow];
+//    infoWindowView *view =  [[[NSBundle mainBundle] loadNibNamed:@"infoWindowView" owner:self options:nil] objectAtIndex:0];
+//
+//    self.infoView = view;
+//     view.center = CGPointMake(self.view.center.x, self.view.center.y-70);
+//     view.layer.cornerRadius = 10.0f;
+//     view.layer.masksToBounds = YES;
+    [self loadDateForInfoView];
+    [mapView1 addSubview:self.infoView];
+    //[self.view addSubview:self.infoView];
+    //[self willShow];
 
     return YES;
 }
@@ -157,6 +160,20 @@ didTapAtCoordinate:(CLLocationCoordinate2D)coordinate
     [self.searchBar resignFirstResponder];
 
 }
+
+#pragma loadData for InfoWindow
+-(void) loadDateForInfoView
+{
+    infoWindowView *view =  [[[NSBundle mainBundle] loadNibNamed:@"infoWindowView" owner:self options:nil] objectAtIndex:0];
+    
+    self.infoView = view;
+    view.center = CGPointMake(self.view.center.x, self.view.center.y-70);
+    view.layer.cornerRadius = 10.0f;
+    view.layer.masksToBounds = YES;
+    
+    
+}
+
 #pragma Animation
 -(void)willShow {
     // Use UIKit Dynamics to make the alertView appear.

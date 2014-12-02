@@ -9,5 +9,13 @@
 #import <UIKit/UIKit.h>
 
 @interface infoWindowView : UIView
+@property (weak, nonatomic) IBOutlet UIView *restaurantView;
+@property (weak, nonatomic) IBOutlet UIButton *shareButton;
+@property (weak, nonatomic) IBOutlet UILabel *restaurantName;
+@property (weak, nonatomic) IBOutlet UILabel *address;
+@property (weak, nonatomic) IBOutlet UILabel *tel;
+@property (weak, nonatomic) IBOutlet UILabel *userNameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *contentLabel;
+@property (weak, nonatomic) IBOutlet UIButton *userButton;
 
 @end
