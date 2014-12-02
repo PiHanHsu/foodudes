@@ -15,6 +15,7 @@
 @interface SearchViewController ()
 @property UISearchBar *searchBar;
 @property UIView *infoView;
+@property(nonatomic,strong) UIDynamicAnimator *animator;
 
 @end
 
@@ -37,7 +38,7 @@
     self.searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 30)];
     self.searchBar.showsSearchResultsButton=YES;
     self.searchBar.searchBarStyle = UIBarStyleDefault;
-    self.searchBar.placeholder =@"Search";
+    self.searchBar.placeholder=@"輸入地點,例如：北投、淡水...";
     self.searchBar.delegate=self;
     
     [self.view addSubview:self.searchBar];
@@ -69,7 +70,7 @@
     [gs geocodeAddress:self.searchBar.text];
     [self addMarker];
     self.searchBar.text=@"";
-    self.searchBar.placeholder=@"Search";
+    self.searchBar.placeholder=@"輸入地點,例如：北投、淡水...";
 
 }
 
@@ -140,17 +141,48 @@
     infoWindowView *view =  [[[NSBundle mainBundle] loadNibNamed:@"infoWindowView" owner:self options:nil] objectAtIndex:0];
 
     self.infoView = view;
-     view.center = CGPointMake(self.view.center.x, self.view.center.y-70);
+     //view.center = CGPointMake(self.view.center.x, self.view.center.y-70);
      view.layer.cornerRadius = 10.0f;
-    [mapView1 addSubview:self.infoView];
+    //[mapView1 addSubview:self.infoView];
+    [self.view addSubview:self.infoView];
+    [self willShow];
 
     return YES;
 }
 - (void)mapView:(GMSMapView *)mapView
 didTapAtCoordinate:(CLLocationCoordinate2D)coordinate
 {
-    self.infoView.hidden =YES;    
+    //self.infoView.hidden =YES;
+    [self viewDismiss];
+    [self.searchBar resignFirstResponder];
+
 }
+#pragma Animation
+-(void)willShow {
+    // Use UIKit Dynamics to make the alertView appear.
+    self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
+    UISnapBehavior *snapBehaviour = [[UISnapBehavior alloc] initWithItem:self.infoView snapToPoint:CGPointMake(self.view.center.x, self.view.center.y-70)];
+    //控制下落速度,數字越大越慢
+    snapBehaviour.damping = .8f;
+    [self.animator addBehavior:snapBehaviour];
+    
+}
+
+-(void)viewDismiss {
+    self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
+    UIGravityBehavior *gravityBehaviour = [[UIGravityBehavior alloc] initWithItems:@[self.infoView]];
+    //控制方向與速度. 0.0f -->正下方, 10.0f 速度 （數字越大越快）
+    gravityBehaviour.gravityDirection = CGVectorMake(0.0f, 10.0f);
+    [self.animator addBehavior:gravityBehaviour];
+    
+    UIDynamicItemBehavior *itemBehaviour = [[UIDynamicItemBehavior alloc] initWithItems:@[self.infoView]];
+    //控制轉動程度,2.0f-->數字越大轉動越大
+    [itemBehaviour addAngularVelocity:2.0f forItem:self.infoView];
+    [self.animator addBehavior:itemBehaviour];
+    
+    
+}
+
 
 
 /*

@@ -19,6 +19,7 @@
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 @property (nonatomic, strong) NSMutableArray *dataArray;
 
+@property(strong, nonatomic) NSString * mobileID;
 
 @end
 
@@ -26,33 +27,34 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
-    NSString *name = [PFUser currentUser][@"profile"][@"name"];
-    if (name) {
-        self.displayNameLabel.text = name;
-    }
-
-    NSString *userProfilePhotoURLString = [PFUser currentUser][@"profile"][@"pictureURL"];
-    // Download the user's facebook profile picture
-    if (userProfilePhotoURLString) {
-        NSURL *pictureURL = [NSURL URLWithString:userProfilePhotoURLString];
-        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
-        [NSURLConnection sendAsynchronousRequest:urlRequest
-                                           queue:[NSOperationQueue mainQueue]
-                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                                   if (connectionError == nil && data != nil) {
-                                       self.headImageView.image = [UIImage imageWithData:data];
-                                       // Add a nice corner radius to the image
-                                       self.headImageView.layer.cornerRadius = 50.0f;
-                                       self.headImageView.layer.masksToBounds = YES;
-                                       
-                                   } else {
-                                       NSLog(@"Failed to load profile photo.");
-                                   }
-                               }];
-        
-}
+//    Loading data from Parse
+    
+//    NSString *name = [PFUser currentUser][@"profile"][@"name"];
+//    if (name) {
+//        self.displayNameLabel.text = name;
+//    }
+//
+//    NSString *userProfilePhotoURLString = [PFUser currentUser][@"profile"][@"pictureURL"];
+//    // Download the user's facebook profile picture
+//    if (userProfilePhotoURLString) {
+//        NSURL *pictureURL = [NSURL URLWithString:userProfilePhotoURLString];
+//        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
+//        [NSURLConnection sendAsynchronousRequest:urlRequest
+//                                           queue:[NSOperationQueue mainQueue]
+//                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+//                                   if (connectionError == nil && data != nil) {
+//                                       self.headImageView.image = [UIImage imageWithData:data];
+//                                       // Add a nice corner radius to the image
+//                                       self.headImageView.layer.cornerRadius = 50.0f;
+//                                       self.headImageView.layer.masksToBounds = YES;
+//                                       
+//                                   } else {
+//                                       NSLog(@"Failed to load profile photo.");
+//                                   }
+//                               }];
+//        
+//}
     
     UILabel *numOfFriends = [[UILabel alloc]initWithFrame:CGRectMake(30, 170, 200, 35)];
     numOfFriends.text = [NSString stringWithFormat:@"朋友數： %i",5];
@@ -65,8 +67,9 @@
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(loadObjects) forControlEvents:UIControlEventValueChanged];
     [self.friendsTableView addSubview:self.refreshControl];
-    [self loadObjects];
-    }
+    //[self loadObjects];
+    [self loadUseData];
+}
 #pragma tableView
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -145,6 +148,64 @@
     
     
 }
+
+-(void)loadUseData
+{
+    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://106.185.53.8/"]];
+    NSString *token =[FBSession activeSession].accessTokenData.accessToken;
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                            token,    @"fb_token"
+                            , nil];
+    NSMutableURLRequest *request = [httpClient requestWithMethod:@"POST"
+                                                            path:@"api/v1/auth/log_in"
+                                                      parameters:params];
+    
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    [httpClient registerHTTPOperationClass:[AFHTTPRequestOperation class]];
+    
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        //載入完成
+        NSLog(@"Completed!");
+        NSString *tmp = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+
+        NSData *rawData = [tmp dataUsingEncoding:NSUTF8StringEncoding];
+        NSError *e;
+        
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:rawData options:NSJSONReadingMutableContainers error:&e];
+        //NSLog(@"Data from Fung: %@", dict);
+        NSString *mobileID = [NSString stringWithFormat:@"%@", [dict objectForKey:@"mobile_id"]];
+        self.mobileID = mobileID;
+        NSString *name = [NSString stringWithFormat:@"%@",[dict objectForKey:@"name"]];
+        self.displayNameLabel.text = name;
+        
+        // From Linode's DB
+        NSString * imageURLString =[dict objectForKey:@"image"];
+            if (imageURLString) {
+                NSURL *pictureURL = [NSURL URLWithString:imageURLString];
+                NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
+                [NSURLConnection sendAsynchronousRequest:urlRequest
+                                                   queue:[NSOperationQueue mainQueue]
+                                       completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                                           if (connectionError == nil && data != nil) {
+                                               self.headImageView.image = [UIImage imageWithData:data];
+                                               // Add a nice corner radius to the image
+                                               self.headImageView.layer.cornerRadius = 50.0f;
+                                               self.headImageView.layer.masksToBounds = YES;
+        
+                                           } else {
+                                               NSLog(@"Failed to load profile photo.");
+                                           }
+                                       }];
+                }
+
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error");
+    }];
+    [operation start];
+    
+}
+
 
 
 
