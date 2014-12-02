@@ -115,15 +115,20 @@
         NSString * users = [NSString stringWithFormat:@"%@", [dict objectForKey:@"users"]];
         NSLog(@"users Data: %@", users);
         
+        
         NSArray * array =[dict objectForKey:@"restaurants"];
         NSLog(@"Name: %@", array[0]);
         
         NSString *userName = [array[0] objectForKey:@"name"];
         NSLog(@"user name: %@", userName);
         
-        NSString *lat = [array[0] objectForKey:@"marker_lat"];
-        NSLog(@"lat: %@", lat);
+        NSString *market_lat = [array[0] objectForKey:@"marker_lat"];
+        double lat = [market_lat doubleValue];
+        NSLog(@"lat: %f", lat);
         
+        NSString *market_lng = [array[0] objectForKey:@"marker_lng"];
+        double lng = [market_lng doubleValue];
+        NSLog(@"lng: %f", lng);
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error!!!!!");
