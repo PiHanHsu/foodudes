@@ -13,9 +13,12 @@
 #import "AFNetworking.h"
 #import "User.h"
 
-@interface AddItemViewController ()
+@interface AddItemViewController ()<UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate>
+
 
 @property(strong, nonatomic) NSString * mobileID;
+@property UISearchBar *searchBar;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @end
 
@@ -25,11 +28,17 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    //User * currentUser = [[User alloc]init];
-    //[currentUser getUserData];
-    
+//    User * currentUser = [[User alloc]init];
+//    [currentUser getUserData];
+//    
     //NSLog(@"Username: %@", currentUser.userName);
+    self.searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 30)];
+    self.searchBar.showsSearchResultsButton=YES;
+    self.searchBar.searchBarStyle = UIBarStyleDefault;
+    self.searchBar.placeholder=@"搜尋餐廳";
+    self.searchBar.delegate=self;
     
+    [self.view addSubview:self.searchBar];
     [self getData];
 }
 
@@ -38,6 +47,42 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma tableView
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    
+    return 1 ;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 10;
+    
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    return 60.0;
+}
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *CellIdentifier = @"TableViewCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    } else {
+        NSLog(@"I have been initialize. Row = %li", (long)indexPath.row);
+    }
+    
+    cell.textLabel.text =@"Restanuant Name";
+    cell.detailTextLabel.text = @"address";
+    cell.imageView.image = [UIImage imageNamed:@"restaurant"];
+    
+    return cell;
+    
+}
+
+#pragma getData
 -(void)getData
 {
     AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://106.185.53.8/"]];

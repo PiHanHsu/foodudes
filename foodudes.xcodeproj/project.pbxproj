@@ -8,10 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		8DC17CA6ED2031E0E1B9DBE7 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43E59F99D58FC7249EA4C8D6 /* libPods.a */; };
+		E85DEB941A2EE53200ADE57A /* pin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E85DEB931A2EE53200ADE57A /* pin@2x.png */; };
 		E870BA231A21EE3D00D81294 /* Logo for login.png in Resources */ = {isa = PBXBuildFile; fileRef = E870BA221A21EE3D00D81294 /* Logo for login.png */; };
 		E870BA251A21F73500D81294 /* WilBeck.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E870BA241A21F73500D81294 /* WilBeck.jpg */; };
-		E870BA271A2224E100D81294 /* FBLoginButton@2X.png in Resources */ = {isa = PBXBuildFile; fileRef = E870BA261A2224E100D81294 /* FBLoginButton@2X.png */; };
-		E870BA291A22251F00D81294 /* FBLoginButton@3X.png in Resources */ = {isa = PBXBuildFile; fileRef = E870BA281A22251F00D81294 /* FBLoginButton@3X.png */; };
+		E870BA271A2224E100D81294 /* FBLoginButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E870BA261A2224E100D81294 /* FBLoginButton@2x.png */; };
+		E870BA291A22251F00D81294 /* FBLoginButton@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E870BA281A22251F00D81294 /* FBLoginButton@3x.png */; };
 		E882252B1A284D180091B48A /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = E88225191A284D180091B48A /* AFHTTPClient.m */; };
 		E882252C1A284D180091B48A /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E882251B1A284D180091B48A /* AFHTTPRequestOperation.m */; };
 		E882252D1A284D180091B48A /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E882251D1A284D180091B48A /* AFImageRequestOperation.m */; };
@@ -63,10 +64,11 @@
 		16169F40602552C4AC0ACA67 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		43E59F99D58FC7249EA4C8D6 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E68D1ED86FDAB2FB7E68736 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		E85DEB931A2EE53200ADE57A /* pin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin@2x.png"; sourceTree = "<group>"; };
 		E870BA221A21EE3D00D81294 /* Logo for login.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Logo for login.png"; sourceTree = "<group>"; };
 		E870BA241A21F73500D81294 /* WilBeck.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = WilBeck.jpg; sourceTree = "<group>"; };
-		E870BA261A2224E100D81294 /* FBLoginButton@2X.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FBLoginButton@2X.png"; sourceTree = "<group>"; };
-		E870BA281A22251F00D81294 /* FBLoginButton@3X.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FBLoginButton@3X.png"; sourceTree = "<group>"; };
+		E870BA261A2224E100D81294 /* FBLoginButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FBLoginButton@2x.png"; sourceTree = "<group>"; };
+		E870BA281A22251F00D81294 /* FBLoginButton@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FBLoginButton@3x.png"; sourceTree = "<group>"; };
 		E88225181A284D180091B48A /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		E88225191A284D180091B48A /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
 		E882251A1A284D180091B48A /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -302,9 +304,10 @@
 		E8B3CBFE1A1D8E3C00C69275 /* image */ = {
 			isa = PBXGroup;
 			children = (
+				E85DEB931A2EE53200ADE57A /* pin@2x.png */,
 				E8FA5A9C1A24CAB2007B41F0 /* launch_image.png */,
-				E870BA261A2224E100D81294 /* FBLoginButton@2X.png */,
-				E870BA281A22251F00D81294 /* FBLoginButton@3X.png */,
+				E870BA261A2224E100D81294 /* FBLoginButton@2x.png */,
+				E870BA281A22251F00D81294 /* FBLoginButton@3x.png */,
 				E870BA241A21F73500D81294 /* WilBeck.jpg */,
 				E870BA221A21EE3D00D81294 /* Logo for login.png */,
 				E8B3CC201A1DF3F500C69275 /* restaurant.png */,
@@ -416,7 +419,7 @@
 				E8B3CC121A1DCDF900C69275 /* Pihan_Marker50@2x.png in Resources */,
 				E8985B0B1A1C851C004845DF /* Main.storyboard in Resources */,
 				E8B3CC091A1D951800C69275 /* search_32x32.png in Resources */,
-				E870BA291A22251F00D81294 /* FBLoginButton@3X.png in Resources */,
+				E870BA291A22251F00D81294 /* FBLoginButton@3x.png in Resources */,
 				E870BA231A21EE3D00D81294 /* Logo for login.png in Resources */,
 				E8B3CC081A1D951800C69275 /* user_32x32.png in Resources */,
 				E8B3CC2B1A1EE3E500C69275 /* foodudes_logo_去背-2.png in Resources */,
@@ -424,10 +427,11 @@
 				E8B3CC1D1A1DE0FC00C69275 /* infoWindowView.xib in Resources */,
 				E8985B101A1C851C004845DF /* LaunchScreen.xib in Resources */,
 				E8B3CC181A1DDDB300C69275 /* Fung_Marker80@2x.png in Resources */,
+				E85DEB941A2EE53200ADE57A /* pin@2x.png in Resources */,
 				E8B3CC161A1DCE2B00C69275 /* Pihan_Marker80@2x.png in Resources */,
 				E8FA5A9D1A24CAB2007B41F0 /* launch_image.png in Resources */,
 				E8B3CC0A1A1D951800C69275 /* plus_32x32.png in Resources */,
-				E870BA271A2224E100D81294 /* FBLoginButton@2X.png in Resources */,
+				E870BA271A2224E100D81294 /* FBLoginButton@2x.png in Resources */,
 				E870BA251A21F73500D81294 /* WilBeck.jpg in Resources */,
 				E8985B0D1A1C851C004845DF /* Images.xcassets in Resources */,
 			);

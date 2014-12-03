@@ -6,10 +6,10 @@
 //  Copyright (c) 2014年 PiHan Hsu. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
+#import <Foundation/Foundation.h> 
 
 @interface User : NSObject
+
 
 @property (strong, nonatomic) NSString * userName;
 @property (strong, nonatomic) NSString * userID;
@@ -18,6 +18,8 @@
 @property (strong, nonatomic) NSString * mobileID;
 
 -(void) getUserData;
+-(void) getRestData;
+
 
 
 @end
