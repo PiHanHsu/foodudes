@@ -17,6 +17,15 @@
 @interface SearchViewController ()
 @property UISearchBar *searchBar;
 @property UIView *infoView;
+
+@property NSDictionary *restaurantDict;
+@property NSArray *restaurantArray;
+
+@property NSString * restaurantID;
+@property NSString * restaurantName;
+@property NSString * restaurantAddress;
+@property NSString * restaurantTel;
+
 @property(nonatomic,strong) UIDynamicAnimator *animator;
 
 @property(strong, nonatomic) NSString * mobileID;
@@ -49,13 +58,13 @@
     [self.view insertSubview:mapView atIndex:0];
     gs = [[GCGeocodingService alloc] init];
     //[self lodaDataFromParse];
-    //[self loadData];
+    [self loadData];
     //[self loadDateForInfoView];
     
     User * currentUser = [[User alloc]init];
-    [currentUser getUserData];
+    //[currentUser getUserData];
     //[currentUser getRestData];
-    [self loadUserData];
+    //[self loadUserData];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -82,7 +91,13 @@
     [self addMarker];
     self.searchBar.text=@"";
     self.searchBar.placeholder=@"輸入地點,例如：北投、淡水...";
+}
 
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
+{
+    [self.infoView removeFromSuperview];
+    return YES;
+    
 }
 
 - (void)addMarker{
@@ -140,156 +155,153 @@
 //}
 //
 
-#pragma loaddata from local
--(void) loadUserData
-{
-    //取資料
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentDirectiory =[paths objectAtIndex:0];
-    NSString *uploadFile = [NSString stringWithFormat:@"user.json"];
-    
-    NSString *filePath = [documentDirectiory stringByAppendingPathComponent:uploadFile];
-    NSData *data = [NSData dataWithContentsOfFile:filePath];
-    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-    
-    NSLog(@"json: %@", json);
-    
-    NSString *mobileID = [NSString stringWithFormat:@"%@", [json objectForKey:@"mobile_id"]];
-    self.mobileID = mobileID;
-    NSLog(@"mobileID: %@", mobileID);
-    
-    [self loadRestData];
-}
-
-//still can't loadRestData
--(void) loadRestData
-{
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentDirectiory =[paths objectAtIndex:0];
-    NSString *uploadFile = [NSString stringWithFormat:@"rest.json"];
-    
-    NSString *filePath = [documentDirectiory stringByAppendingPathComponent:uploadFile];
-    NSData *data = [NSData dataWithContentsOfFile:filePath];
-    NSDictionary *rest = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-    
-    NSLog(@"rest: %@", rest);
-
-}
+//#pragma loaddata from local
+//-(void) loadUserData
+//{
+//    //取資料
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSString *documentDirectiory =[paths objectAtIndex:0];
+//    NSString *uploadFile = [NSString stringWithFormat:@"user.json"];
+//    
+//    NSString *filePath = [documentDirectiory stringByAppendingPathComponent:uploadFile];
+//    NSData *data = [NSData dataWithContentsOfFile:filePath];
+//    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+//    
+//    NSLog(@"json: %@", json);
+//    
+//    NSString *mobileID = [NSString stringWithFormat:@"%@", [json objectForKey:@"mobile_id"]];
+//    self.mobileID = mobileID;
+//    NSLog(@"mobileID: %@", mobileID);
+//    
+//    [self loadRestData];
+//}
+//
+////still can't loadRestData
+//-(void) loadRestData
+//{
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSString *documentDirectiory =[paths objectAtIndex:0];
+//    NSString *uploadFile = [NSString stringWithFormat:@"rest.json"];
+//    
+//    NSString *filePath = [documentDirectiory stringByAppendingPathComponent:uploadFile];
+//    NSData *data = [NSData dataWithContentsOfFile:filePath];
+//    NSDictionary *rest = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+//    
+//    NSLog(@"rest: %@", rest);
+//
+//}
 
 #pragma lodaData from Linode
-//-(void)loadData
-//{
-//    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://106.185.53.8/"]];
-//    NSString *token =[FBSession activeSession].accessTokenData.accessToken;
-//    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-//                            token,    @"fb_token"
-//                            , nil];
-//    NSMutableURLRequest *request = [httpClient requestWithMethod:@"POST"
-//                                                            path:@"api/v1/auth/log_in"
-//                                                      parameters:params];
-//   
-//    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-//    [httpClient registerHTTPOperationClass:[AFHTTPRequestOperation class]];
-// 
-//    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-//        
-//#pragma mark - progressed 完成
-//        //載入完成
-//        NSLog(@"Completed!");
-//        NSString *tmp = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-//        //test log
-//        //NSLog(@"Response: %@",tmp);
-//#pragma mark - 轉資料11/26
-//        NSData *rawData = [tmp dataUsingEncoding:NSUTF8StringEncoding];
-//        NSError *e;
-//        
-//        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:rawData options:NSJSONReadingMutableContainers error:&e];
-//        NSLog(@"Data from Fung: %@", dict);
-//        NSString *mobileID = [NSString stringWithFormat:@"%@", [dict objectForKey:@"mobile_id"]];
-//        self.mobileID = mobileID;
-//        [self loadRestaurntData];
-//        
-//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-//        NSLog(@"Error");
-//    }];
-//    
-//    //4. Start傳輸
-//    [operation start];
-//
-//}
-//-(void) loadRestaurntData
-//{
-//    
-//    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://106.185.53.8/"]];
-//    
-//    NSString * mobileID = self.mobileID;
-//    
-//    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-//                            mobileID,    @"mobile_id"
-//                            , nil];
-//    NSMutableURLRequest *request = [httpClient requestWithMethod:@"GET"
-//                                                            path:@"api/v1/maps/index"
-//                                                      parameters:params];
-//    
-//    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-//    [httpClient registerHTTPOperationClass:[AFHTTPRequestOperation class]];
-//    
-//    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-//        
-//        NSLog(@"Completed!");
-//        NSString *tmp = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-//        
-//        NSData *rawData = [tmp dataUsingEncoding:NSUTF8StringEncoding];
-//        NSError *e;
-//        
-//        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:rawData options:NSJSONReadingMutableContainers error:&e];
-//        NSLog(@"Query2 Data: %@", dict);
-//        NSString * restaurants = [NSString stringWithFormat:@"%@", [dict objectForKey:@"restaurants"]];
-//        NSLog(@"Restaurant Data: %@", restaurants);
-//        
-//        NSString * users = [NSString stringWithFormat:@"%@", [dict objectForKey:@"users"]];
-//        NSLog(@"users Data: %@", users);
-//        
-//        NSArray * array =[dict objectForKey:@"restaurants"];
-//        NSLog(@"Name: %@", array[0]);
-//        NSLog(@"num: %ld", array.count);
-//        
-//        for (int i =0; i <array.count; i++) {
-//            
-//            NSString *restaurantName = [array[i] objectForKey:@"name"];
-//            NSLog(@"restaurantName: %@", restaurantName);
-//            
-//            
-//            NSString *market_lat = [array[i] objectForKey:@"marker_lat"];
-//            double lat = [market_lat doubleValue];
-//            NSLog(@"lat: %f", lat);
-//            
-//            NSString *market_lng = [array[i] objectForKey:@"marker_lng"];
-//            double lng = [market_lng doubleValue];
-//            NSLog(@"lng: %f", lng);
-//            
-//            NSString *restaurantID = [array[i] objectForKey:@"id"];
-//            NSLog(@"restaurantID: %@", restaurantID);
-//            
-//            GMSMarker * markers = [[GMSMarker alloc]init];
-//            markers.position = CLLocationCoordinate2DMake(lat, lng);
-//            markers.title = restaurantName;
-//            markers.userData= restaurantID;
-//            
-//            markers.map = mapView;
-//        }
-//        
-//        
-//
-//        
-//        
-//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-//        NSLog(@"Error!!!!!");
-//    }];
-//    
-//    [operation start];
-//
-//}
+-(void)loadData
+{
+    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://106.185.53.8/"]];
+    NSString *token =[FBSession activeSession].accessTokenData.accessToken;
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                            token,    @"fb_token"
+                            , nil];
+    NSMutableURLRequest *request = [httpClient requestWithMethod:@"POST"
+                                                            path:@"api/v1/auth/log_in"
+                                                      parameters:params];
+   
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    [httpClient registerHTTPOperationClass:[AFHTTPRequestOperation class]];
+ 
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+#pragma mark - progressed 完成
+        //載入完成
+        NSLog(@"Completed!");
+        NSString *tmp = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+        //test log
+        //NSLog(@"Response: %@",tmp);
+#pragma mark - 轉資料11/26
+        NSData *rawData = [tmp dataUsingEncoding:NSUTF8StringEncoding];
+        NSError *e;
+        
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:rawData options:NSJSONReadingMutableContainers error:&e];
+        NSLog(@"Data from Fung: %@", dict);
+        NSString *mobileID = [NSString stringWithFormat:@"%@", [dict objectForKey:@"mobile_id"]];
+        self.mobileID = mobileID;
+        [self loadRestaurntData];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error");
+    }];
+    
+    //4. Start傳輸
+    [operation start];
+
+}
+-(void) loadRestaurntData
+{
+    
+    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://106.185.53.8/"]];
+    
+    NSString * mobileID = self.mobileID;
+    
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                            mobileID,    @"mobile_id"
+                            , nil];
+    NSMutableURLRequest *request = [httpClient requestWithMethod:@"GET"
+                                                            path:@"api/v1/maps/index"
+                                                      parameters:params];
+    
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    [httpClient registerHTTPOperationClass:[AFHTTPRequestOperation class]];
+    
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSLog(@"Completed!");
+        NSString *tmp = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+        
+        NSData *rawData = [tmp dataUsingEncoding:NSUTF8StringEncoding];
+        NSError *e;
+        
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:rawData options:NSJSONReadingMutableContainers error:&e];
+        NSLog(@"Query2 Data: %@", dict);
+        self.restaurantDict = dict;
+        NSString * restaurants = [NSString stringWithFormat:@"%@", [dict objectForKey:@"restaurants"]];
+        NSLog(@"Restaurant Data: %@", restaurants);
+        
+        NSString * users = [NSString stringWithFormat:@"%@", [dict objectForKey:@"users"]];
+        NSLog(@"users Data: %@", users);
+        
+        NSArray * array =[dict objectForKey:@"restaurants"];
+        NSLog(@"Name: %@", array[0]);
+        NSLog(@"num: %ld", array.count);
+        
+        for (int i =0; i <array.count; i++) {
+            
+            self.restaurantName = [array[i] objectForKey:@"name"];
+            NSLog(@"restaurantName: %@", self.restaurantName);
+            
+            
+            NSString *market_lat = [array[i] objectForKey:@"marker_lat"];
+            double lat = [market_lat doubleValue];
+            NSLog(@"lat: %f", lat);
+            
+            NSString *market_lng = [array[i] objectForKey:@"marker_lng"];
+            double lng = [market_lng doubleValue];
+            NSLog(@"lng: %f", lng);
+            
+//            self.restaurantID = [array[i] objectForKey:@"id"];
+//            NSLog(@"restaurantID: %@", self.restaurantID);
+            
+            GMSMarker * markers = [[GMSMarker alloc]init];
+            markers.position = CLLocationCoordinate2DMake(lat, lng);
+            markers.userData=[NSString stringWithFormat:@"%@",  [array[i] objectForKey:@"id"]];
+            
+            markers.map = mapView;
+        }
+   
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error!!!!!");
+    }];
+    
+    [operation start];
+
+}
 
 
 
@@ -297,6 +309,7 @@
 
 - (BOOL)mapView:(GMSMapView *)mapView1 didTapMarker:(GMSMarker *)marker
 {
+    [self.infoView removeFromSuperview];
     CGPoint point = [mapView1.projection pointForCoordinate:marker.position];
     point.y = point.y - 120;
     GMSCameraUpdate *camera =
@@ -304,15 +317,28 @@
     [mapView1 animateWithCameraUpdate:camera];
     
     NSLog(@"restaurantID: %@", marker.userData);
+    self.restaurantID =marker.userData;
+    self.restaurantArray = [self.restaurantDict objectForKey:@"restaurants"];
+    
+    NSLog(@"self.Array: %@", self.restaurantArray);
+    for (int i = 0; i < self.restaurantArray.count; i++) {
+        NSDictionary *d =self.restaurantArray[i] ;
+        NSString *s = [NSString stringWithFormat:@"%@", d[@"id"]];
+        NSLog(@"s : %@",s);
+        
+        if ( [s isEqualToString:self.restaurantID]) {
+            self.restaurantName = d[@"name"];
+            self.restaurantAddress =d[@"address"];
+            self.restaurantTel = d[@"phone_number"];
+            NSLog(@"self.rest name: %@", self.restaurantName);
+            break;
+        }
+    }
+
     
     
     mapView1.selectedMarker = marker;
-//    infoWindowView *view =  [[[NSBundle mainBundle] loadNibNamed:@"infoWindowView" owner:self options:nil] objectAtIndex:0];
-//
-//    self.infoView = view;
-//     view.center = CGPointMake(self.view.center.x, self.view.center.y-70);
-//     view.layer.cornerRadius = 10.0f;
-//     view.layer.masksToBounds = YES;
+
     [self loadDateForInfoView];
     [mapView1 addSubview:self.infoView];
     //[self.view addSubview:self.infoView];
@@ -323,10 +349,10 @@
 - (void)mapView:(GMSMapView *)mapView
 didTapAtCoordinate:(CLLocationCoordinate2D)coordinate
 {
-    //self.infoView.hidden =YES;
+    
     [self viewDismiss];
     [self.searchBar resignFirstResponder];
-
+    //self.infoView.hidden =YES;
 }
 
 #pragma loadData for InfoWindow
@@ -337,7 +363,11 @@ didTapAtCoordinate:(CLLocationCoordinate2D)coordinate
     self.infoView = view;
     
     
-    //view.userNameLabel.text =@"Fung Lee";
+    
+    view.restaurantName.text =self.restaurantName;
+    view.address.text=self.restaurantAddress;
+    view.tel.text=self.restaurantTel;
+    
     view.center = CGPointMake(self.view.center.x, self.view.center.y-70);
     view.layer.cornerRadius = 10.0f;
     view.layer.masksToBounds = YES;

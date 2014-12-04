@@ -11,6 +11,7 @@
 #import <Parse/Parse.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 #import <FacebookSDK/FacebookSDK.h>
+#import "User.h"
 
 @interface LoginViewController ()
 
@@ -31,14 +32,13 @@
     logoImageView.center = CGPointMake(self.view.center.x, self.view.center.y*0.6);
     
     
-    
        UIButton *loginButton =[[UIButton alloc]init];
     loginButton.frame= CGRectMake(0, 0, 240, 45.75);
     loginButton.center = CGPointMake(self.view.center.x
                                      , self.view.center.y*1.3);
     [loginButton addTarget:self action:@selector(loginButtonTouchHandler:) forControlEvents:UIControlEventTouchUpInside];
     [loginButton setImage:[UIImage imageNamed:@"FBLoginButton"] forState:UIControlStateNormal];
-    //loginButton.backgroundColor =[UIColor redColor];
+    
     [self.view addSubview:logoImageView];
     [self.view addSubview:loginButton];
 }
@@ -50,6 +50,8 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    
     
     //Check if user is cached and linked to Facebook, if so, bypass login
     if ([PFUser currentUser] && [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
@@ -83,14 +85,12 @@
         } else {
             if (user.isNew) {
                 NSLog(@"User with facebook signed up and logged in!");
+                User *currentUser = [[User alloc]init];
+                [currentUser getUserData];
+            
                 
             } else {
                 NSLog(@"User with facebook logged in!");
-                //NSLog(@" user info %@", user.description);
-                //user.email=[PFUser currentUser][@"profile"][@"email"];
-                //user[@"name"]=[PFUser currentUser][@"profile"][@"name"];
-                //user[@"gender"]=[PFUser currentUser][@"profile"][@"gender"];
-                //user[@"birthday"]=[PFUser currentUser][@"profile"][@"birthday"];
                 
                 
             }
