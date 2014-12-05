@@ -13,13 +13,17 @@
 #import "infoWindowView.h"
 #import "AFNetworking.h"
 #import "User.h"
+#import "userMarkerView.h"
 
 @interface SearchViewController ()
 @property UISearchBar *searchBar;
 @property UIView *infoView;
-
+@property UIImage * userCustomMarker;
 @property NSDictionary *restaurantDict;
 @property NSArray *restaurantArray;
+
+@property (strong, nonatomic) NSMutableDictionary *usersDictionary;
+
 
 @property NSString * restaurantID;
 @property NSString * restaurantName;
@@ -74,12 +78,17 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     GMSMarker *marker = [[GMSMarker alloc] init];
-    marker.position = CLLocationCoordinate2DMake(25.023868, 121.528976);
-    //marker.title = @"Pasta Paradise";
-    //marker.snippet = @"Good restaurant!!";
-    marker.icon =[UIImage imageNamed:@"pin"];
+    marker.position = CLLocationCoordinate2DMake(25.023950, 121.528976);
+    //marker.icon =[UIImage imageNamed:@"pin"];
     marker.appearAnimation = kGMSMarkerAnimationPop;
     marker.map = mapView;
+}
+
+-(NSMutableDictionary*) usersDictionary {
+    if(!_usersDictionary)
+        _usersDictionary = [[NSMutableDictionary alloc]init];
+    return _usersDictionary;
+    
 }
 
 
@@ -98,6 +107,18 @@
     [self.infoView removeFromSuperview];
     return YES;
     
+}
+
+-(void)addTestMarker
+{
+    GMSMarker *testMarker = [[GMSMarker alloc]init];
+    testMarker.position= CLLocationCoordinate2DMake(25.023870, 121.5280);
+    UIImageView * imageView =[[UIImageView alloc]init];
+    imageView.image =self.userCustomMarker;
+    
+    //testMarker.icon =[UIImage imageNamed:@"pin"];
+    testMarker.icon =imageView.image;
+    testMarker.map=mapView;
 }
 
 - (void)addMarker{
@@ -258,13 +279,56 @@
         NSError *e;
         
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:rawData options:NSJSONReadingMutableContainers error:&e];
-        NSLog(@"Query2 Data: %@", dict);
+        //NSLog(@"Query2 Data: %@", dict);
         self.restaurantDict = dict;
         NSString * restaurants = [NSString stringWithFormat:@"%@", [dict objectForKey:@"restaurants"]];
-        NSLog(@"Restaurant Data: %@", restaurants);
+        //NSLog(@"Restaurant Data: %@", restaurants);
         
-        NSString * users = [NSString stringWithFormat:@"%@", [dict objectForKey:@"users"]];
-        NSLog(@"users Data: %@", users);
+        NSArray * users = [dict objectForKey:@"users"];
+        //NSLog(@"users Data: %@", users);
+        
+        // load image and do custom marker
+        
+        for (int i =1; i< users.count; i++) {
+            NSString *userPhotoURLString = [NSString stringWithFormat:@"%@", [users[i] objectForKey:@"image"]];
+            
+            NSLog(@"URL: %@", userPhotoURLString);
+            if (userPhotoURLString) {
+                NSURL *pictureURL = [NSURL URLWithString:userPhotoURLString];
+                NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
+                
+                [NSURLConnection sendAsynchronousRequest:urlRequest
+                                                   queue:[NSOperationQueue mainQueue]
+                                       completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                                           if (connectionError == nil && data != nil) {
+                                               
+                                               userMarkerView *view =  [[[NSBundle mainBundle] loadNibNamed:@"UserMarkerView" owner:self options:nil] objectAtIndex:0];
+                                               view.userImage.image =[UIImage imageWithData:data];
+                                               view.userImage.layer.cornerRadius = 18.0f;
+                                               view.userImage.layer.masksToBounds =YES;
+                                               
+                                               UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, 0.0);
+                                               [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+                                               
+                                               UIImage *imageScreen =UIGraphicsGetImageFromCurrentImageContext();
+                                               UIGraphicsEndImageContext();
+                                               
+//                                               self.usersDictionary = users[i];
+//                                               [self.usersDictionary setObject:imageScreen forKey:@"imagescreen"];
+//                                               PFObject *userData = [PFObject objectWithClassName:@"userData" dictionary:self.usersDictionary];
+                                               
+                                               self.userCustomMarker= imageScreen;
+                                               [self addTestMarker];
+                                               
+                                           } else {
+                                               NSLog(@"Failed to load profile photo.");
+                                           }
+                                       }];
+            }
+
+        }
+        
+        
         
         NSArray * array =[dict objectForKey:@"restaurants"];
         NSLog(@"Name: %@", array[0]);
@@ -275,7 +339,6 @@
             self.restaurantName = [array[i] objectForKey:@"name"];
             NSLog(@"restaurantName: %@", self.restaurantName);
             
-            
             NSString *market_lat = [array[i] objectForKey:@"marker_lat"];
             double lat = [market_lat doubleValue];
             NSLog(@"lat: %f", lat);
@@ -284,13 +347,13 @@
             double lng = [market_lng doubleValue];
             NSLog(@"lng: %f", lng);
             
-//            self.restaurantID = [array[i] objectForKey:@"id"];
-//            NSLog(@"restaurantID: %@", self.restaurantID);
-            
             GMSMarker * markers = [[GMSMarker alloc]init];
             markers.position = CLLocationCoordinate2DMake(lat, lng);
             markers.userData=[NSString stringWithFormat:@"%@",  [array[i] objectForKey:@"id"]];
+            UIImageView * imageView =[[UIImageView alloc]init];
+            imageView.image =self.userCustomMarker;
             
+            //markers.icon =self.userCustomMarker;
             markers.map = mapView;
         }
    
@@ -311,7 +374,7 @@
 {
     [self.infoView removeFromSuperview];
     CGPoint point = [mapView1.projection pointForCoordinate:marker.position];
-    point.y = point.y - 120;
+    point.y = point.y - 130;
     GMSCameraUpdate *camera =
     [GMSCameraUpdate setTarget:[mapView1.projection coordinateForPoint:point]];
     [mapView1 animateWithCameraUpdate:camera];
@@ -362,13 +425,11 @@ didTapAtCoordinate:(CLLocationCoordinate2D)coordinate
     
     self.infoView = view;
     
-    
-    
     view.restaurantName.text =self.restaurantName;
     view.address.text=self.restaurantAddress;
     view.tel.text=self.restaurantTel;
     
-    view.center = CGPointMake(self.view.center.x, self.view.center.y-70);
+    view.center = CGPointMake(self.view.center.x, self.view.center.y-80);
     view.layer.cornerRadius = 10.0f;
     view.layer.masksToBounds = YES;
     

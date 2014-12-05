@@ -12,6 +12,7 @@
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import "AFNetworking.h"
+#import "userMarkerView.h"
 
 @interface ProfileViewController ()<UITableViewDataSource, UITableViewDelegate>
 
@@ -193,6 +194,19 @@
                                                self.headImageView.layer.cornerRadius = 50.0f;
                                                self.headImageView.layer.masksToBounds = YES;
         
+//                                                userMarkerView *view =  [[[NSBundle mainBundle] loadNibNamed:@"UserMarkerView" owner:self options:nil] objectAtIndex:0];
+//                                               view.userImage.image=[UIImage imageWithData:data];
+//                                               view.userImage.layer.cornerRadius =20.f;
+//                                               view.userImage.layer.masksToBounds = YES;
+//                                               
+//                                               UIGraphicsBeginImageContextWithOptions(view.frame.size, view.opaque, 0.0);
+//                                               [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+//                                               UIImage *imageScreen =UIGraphicsGetImageFromCurrentImageContext();
+//                                               
+//                                               UIGraphicsEndImageContext();
+//                                               self.headImageView.image =imageScreen;
+                                               
+                                               
                                            } else {
                                                NSLog(@"Failed to load profile photo.");
                                            }

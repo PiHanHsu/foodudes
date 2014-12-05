@@ -72,8 +72,8 @@
             <connections>
                 <outlet property="address" destination="gP2-90-Mxt" id="BX7-Dq-ol9"/>
                 <outlet property="contentLabel" destination="ipg-c5-1FS" id="5Oa-Y4-lrq"/>
+                <outlet property="restaurantImageView" destination="wSY-DM-3Rv" id="kWf-u4-odh"/>
                 <outlet property="restaurantName" destination="LNp-91-08p" id="Wds-kF-19W"/>
-                <outlet property="restaurantView" destination="pKc-Fy-0Jq" id="8AR-Ne-dbc"/>
                 <outlet property="shareButton" destination="ef1-YP-jgk" id="5ir-iq-JKE"/>
                 <outlet property="tel" destination="58J-fX-ovE" id="YXX-ZT-wHB"/>
                 <outlet property="userButton" destination="euP-rF-kmw" id="VQM-kU-vWF"/>

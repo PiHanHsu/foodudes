@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface infoWindowView : UIView
-@property (weak, nonatomic) IBOutlet UIView *restaurantView;
+
+@property (weak, nonatomic) IBOutlet UIImageView *restaurantImageView;
 @property (weak, nonatomic) IBOutlet UIButton *shareButton;
 @property (weak, nonatomic) IBOutlet UILabel *restaurantName;
 @property (weak, nonatomic) IBOutlet UILabel *address;
