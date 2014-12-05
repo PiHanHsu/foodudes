@@ -12,8 +12,13 @@
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import "User.h"
+#import "MBProgressHUD.h"
 
-@interface LoginViewController ()
+@interface LoginViewController () <MBProgressHUDDelegate>
+{
+    MBProgressHUD  *progressHUD;
+
+}
 
 
 @end
@@ -41,6 +46,18 @@
     
     [self.view addSubview:logoImageView];
     [self.view addSubview:loginButton];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserverForName:@"loadingDataFinished"
+     object:nil
+     queue:[NSOperationQueue mainQueue]
+     usingBlock:^(NSNotification *notification) {
+         if ([notification.name isEqualToString:@"loadingDataFinished"]) {
+             NSLog(@"Loading Data Finished!");
+             [self _ViewControllerAnimated:YES]; 
+         }
+     }];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -54,9 +71,26 @@
     
     
     //Check if user is cached and linked to Facebook, if so, bypass login
-    if ([PFUser currentUser] && [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
-    [self _ViewControllerAnimated:YES];
-    }
+//    if ([PFUser currentUser] && [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
+//    [self _ViewControllerAnimated:YES];
+//    }
+}
+- (void)initializeProgressHUD:(NSString *)msg
+{
+    if (progressHUD)
+        [progressHUD removeFromSuperview];
+    
+    progressHUD = [[MBProgressHUD alloc] initWithView:self.view];
+    [self.view addSubview:progressHUD];
+    progressHUD.dimBackground = NO;
+    progressHUD.delegate = self;
+    progressHUD.labelText = msg;
+    
+    progressHUD.margin = 20.f;
+    progressHUD.yOffset = 10.f;
+    
+    progressHUD.removeFromSuperViewOnHide = YES;
+    [progressHUD show:YES];
 }
 
 - (IBAction)loginButtonTouchHandler:(id)sender  {
@@ -87,14 +121,15 @@
                 NSLog(@"User with facebook signed up and logged in!");
                 User *currentUser = [[User alloc]init];
                 [currentUser getUserData];
-            
+                [self initializeProgressHUD:@"Loading..."];
                 
             } else {
                 NSLog(@"User with facebook logged in!");
-                
-                
+                User *currentUser = [[User alloc]init];
+                [currentUser getUserData];
+                [self initializeProgressHUD:@"Loading..."];
             }
-            [self _ViewControllerAnimated:YES];
+            //[self _ViewControllerAnimated:YES];
         }
     }];
     

@@ -10,6 +10,7 @@
 #import "AFNetworking.h"
 #import <FacebookSDK/FacebookSDK.h>
 
+
 @implementation User
 -(void) getUserData{
     
@@ -46,25 +47,23 @@
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentDirectiory =[paths objectAtIndex:0];
         NSString *uploadFile = [NSString stringWithFormat:@"user.json"];
-        
         NSString *filePath = [documentDirectiory stringByAppendingPathComponent:uploadFile];
-        //NSLog(@"filePath: %@", filePath);
         
         [jsondata writeToFile:filePath atomically:YES];
  
         //NSLog(@"Data from Fung: %@", dict);
         
-        NSString *email= [NSString stringWithFormat:@"%@", [dict objectForKey:@"email"]];
-        NSString *fooduduesID = [NSString stringWithFormat:@"%@", [dict objectForKey:@"id"]];
-        NSString *photoURL = [NSString stringWithFormat:@"%@", [dict objectForKey:@"image"]];
-        NSString *mobileID = [NSString stringWithFormat:@"%@", [dict objectForKey:@"mobile_id"]];
-        NSString *name = [NSString stringWithFormat:@"%@", [dict objectForKey:@"name"]];
-        
-        self.email=email;
-        self.userID =fooduduesID;
-        self.userPhotoURL=photoURL;
-        self.mobileID=mobileID;
-        self.userName=name;
+//        NSString *email= [NSString stringWithFormat:@"%@", [dict objectForKey:@"email"]];
+//        NSString *fooduduesID = [NSString stringWithFormat:@"%@", [dict objectForKey:@"id"]];
+//        NSString *photoURL = [NSString stringWithFormat:@"%@", [dict objectForKey:@"image"]];
+//        NSString *mobileID = [NSString stringWithFormat:@"%@", [dict objectForKey:@"mobile_id"]];
+//        NSString *name = [NSString stringWithFormat:@"%@", [dict objectForKey:@"name"]];
+//        
+//        self.email=email;
+//        self.userID =fooduduesID;
+//        self.userPhotoURL=photoURL;
+//        self.mobileID=mobileID;
+//        self.userName=name;
        
         //NSLog(@"user name: %@", self.userName);
         [self getRestData];
@@ -114,36 +113,10 @@
             
             [jsondata writeToFile:filePath atomically:YES];
             
-//            NSLog(@"Query2 Data: %@", dict);
-//            NSString * restaurants = [NSString stringWithFormat:@"%@", [dict objectForKey:@"restaurants"]];
-//            NSLog(@"Restaurant Data: %@", restaurants);
-//    
-//            NSString * users = [NSString stringWithFormat:@"%@", [dict objectForKey:@"users"]];
-//            NSLog(@"users Data: %@", users);
-//    
-//            NSArray * array =[dict objectForKey:@"restaurants"];
-//            NSLog(@"Name: %@", array[0]);
-//            NSLog(@"num: %ld", array.count);
-//    
-//            for (int i =0; i <array.count; i++) {
-//    
-//                NSString *restaurantName = [array[i] objectForKey:@"name"];
-//                NSLog(@"restaurantName: %@", restaurantName);
-//    
-//    
-//                NSString *market_lat = [array[i] objectForKey:@"marker_lat"];
-//                double lat = [market_lat doubleValue];
-//                NSLog(@"lat: %f", lat);
-//    
-//                NSString *market_lng = [array[i] objectForKey:@"marker_lng"];
-//                double lng = [market_lng doubleValue];
-//                NSLog(@"lng: %f", lng);
-//    
-//                NSString *restaurantID = [array[i] objectForKey:@"id"];
-//                NSLog(@"restaurantID: %@", restaurantID);
-//    
-//            }
-        
+
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"loadingDataFinished" object:self];
+            
+            
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error!!!!!");
         }];

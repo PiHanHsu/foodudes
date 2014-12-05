@@ -49,6 +49,7 @@
 		E8B3CC2B1A1EE3E500C69275 /* foodudes_logo_去背-2.png in Resources */ = {isa = PBXBuildFile; fileRef = E8B3CC2A1A1EE3E500C69275 /* foodudes_logo_去背-2.png */; };
 		E8D5324D1A309D840024A1B6 /* UserMarkerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E8D5324C1A309D840024A1B6 /* UserMarkerView.xib */; };
 		E8D532531A30A5910024A1B6 /* userMarkerView.m in Sources */ = {isa = PBXBuildFile; fileRef = E8D532521A30A5910024A1B6 /* userMarkerView.m */; };
+		E8D532891A3210A60024A1B6 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = E8D532881A3210A60024A1B6 /* MBProgressHUD.m */; };
 		E8FA5A9D1A24CAB2007B41F0 /* launch_image.png in Resources */ = {isa = PBXBuildFile; fileRef = E8FA5A9C1A24CAB2007B41F0 /* launch_image.png */; };
 /* End PBXBuildFile section */
 
@@ -131,6 +132,8 @@
 		E8D5324C1A309D840024A1B6 /* UserMarkerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = UserMarkerView.xib; path = ../Models/UserMarkerView.xib; sourceTree = "<group>"; };
 		E8D532511A30A5910024A1B6 /* userMarkerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = userMarkerView.h; sourceTree = "<group>"; };
 		E8D532521A30A5910024A1B6 /* userMarkerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = userMarkerView.m; sourceTree = "<group>"; };
+		E8D532871A3210A60024A1B6 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
+		E8D532881A3210A60024A1B6 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		E8FA5A9C1A24CAB2007B41F0 /* launch_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launch_image.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -164,6 +167,7 @@
 		E88225161A284CB70091B48A /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				E8D532861A3210A60024A1B6 /* MBProgress */,
 				E88225171A284CCE0091B48A /* AFNetworking */,
 			);
 			path = Library;
@@ -329,6 +333,15 @@
 				E8B3CC071A1D951800C69275 /* plus_32x32.png */,
 			);
 			name = image;
+			sourceTree = "<group>";
+		};
+		E8D532861A3210A60024A1B6 /* MBProgress */ = {
+			isa = PBXGroup;
+			children = (
+				E8D532871A3210A60024A1B6 /* MBProgressHUD.h */,
+				E8D532881A3210A60024A1B6 /* MBProgressHUD.m */,
+			);
+			path = MBProgress;
 			sourceTree = "<group>";
 		};
 		F433B5ABCB3DE136BBBC0320 /* Pods */ = {
@@ -506,6 +519,7 @@
 				E882252B1A284D180091B48A /* AFHTTPClient.m in Sources */,
 				E88225301A284D180091B48A /* AFPropertyListRequestOperation.m in Sources */,
 				E8985B2D1A1C8AD4004845DF /* SearchViewController.m in Sources */,
+				E8D532891A3210A60024A1B6 /* MBProgressHUD.m in Sources */,
 				E8985B051A1C851C004845DF /* AppDelegate.m in Sources */,
 				E8985B301A1C8AE3004845DF /* ProfileViewController.m in Sources */,
 				E8985B021A1C851C004845DF /* main.m in Sources */,
