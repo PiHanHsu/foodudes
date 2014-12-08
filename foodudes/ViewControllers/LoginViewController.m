@@ -122,6 +122,7 @@
                 User *currentUser = [[User alloc]init];
                 [currentUser getUserData];
                 [self initializeProgressHUD:@"Loading..."];
+                [currentUser saveUserDataToParse];
                 
             } else {
                 NSLog(@"User with facebook logged in!");

@@ -18,7 +18,7 @@
 
 -(void) getUserData;
 -(void) getRestData;
-
+-(void) saveUserDataToParse;
 
 
 @end

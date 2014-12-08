@@ -25,7 +25,7 @@
             </objects>
             <point key="canvasLocation" x="1358" y="121"/>
         </scene>
-        <!--Search-->
+        <!--Search View Controller-->
         <scene sceneID="DOx-IS-aMR">
             <objects>
                 <viewController storyboardIdentifier="SearchViewController" id="GY9-dv-Fa9" customClass="SearchViewController" sceneMemberID="viewController">
@@ -38,13 +38,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Search" image="search_32x32.png" id="U9y-qB-UyP"/>
+                    <tabBarItem key="tabBarItem" systemItem="search" id="U9y-qB-UyP"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RKd-4j-B8m" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3413" y="159"/>
         </scene>
-        <!--Profile-->
+        <!--Profile View Controller-->
         <scene sceneID="Y09-AZ-SOb">
             <objects>
                 <viewController id="vyJ-iQ-cbo" customClass="ProfileViewController" sceneMemberID="viewController">
@@ -57,7 +57,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nTg-Mc-uMi">
-                                <rect key="frame" x="176" y="106" width="49" height="30"/>
+                                <rect key="frame" x="163" y="147" width="49" height="30"/>
                                 <state key="normal" title="Logout">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -66,27 +66,28 @@
                                 </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0V2-ai-NS1">
-                                <rect key="frame" x="30" y="50" width="100" height="100"/>
+                                <rect key="frame" x="20" y="70" width="100" height="100"/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jyU-e2-fa5">
-                                <rect key="frame" x="176" y="55" width="180" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="7tq-Jh-40X">
-                                <rect key="frame" x="16" y="210" width="375" height="341"/>
+                                <rect key="frame" x="0.0" y="200" width="375" height="500"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <inset key="separatorInset" minX="65" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <outlet property="dataSource" destination="vyJ-iQ-cbo" id="SJM-Lr-O8m"/>
                                     <outlet property="delegate" destination="vyJ-iQ-cbo" id="feY-uI-wUl"/>
                                 </connections>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jyU-e2-fa5">
+                                <rect key="frame" x="160" y="80" width="180" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Profile" image="user_32x32.png" id="rXy-Zs-YT7"/>
+                    <tabBarItem key="tabBarItem" systemItem="contacts" id="rXy-Zs-YT7"/>
                     <connections>
                         <outlet property="displayNameLabel" destination="jyU-e2-fa5" id="59x-D0-laM"/>
                         <outlet property="friendsTableView" destination="7tq-Jh-40X" id="Kyh-Zd-kJE"/>
@@ -97,7 +98,7 @@
             </objects>
             <point key="canvasLocation" x="2738" y="525"/>
         </scene>
-        <!--Add Item-->
+        <!--Add Item View Controller-->
         <scene sceneID="e0v-Vk-pcB">
             <objects>
                 <viewController id="Wee-av-F8S" customClass="AddItemViewController" sceneMemberID="viewController">
@@ -120,7 +121,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Add Item" image="plus_32x32.png" id="CFj-cR-Anf"/>
+                    <tabBarItem key="tabBarItem" systemItem="favorites" id="CFj-cR-Anf"/>
                     <connections>
                         <outlet property="tableView" destination="Q0L-Ss-Xb3" id="Hu2-dJ-YiI"/>
                     </connections>
@@ -168,9 +169,4 @@
             <point key="canvasLocation" x="546" y="121"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="plus_32x32.png" width="32" height="32"/>
-        <image name="search_32x32.png" width="32" height="32"/>
-        <image name="user_32x32.png" width="32" height="32"/>
-    </resources>
 </document>

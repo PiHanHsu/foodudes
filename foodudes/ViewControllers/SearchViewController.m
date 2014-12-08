@@ -14,13 +14,25 @@
 #import "AFNetworking.h"
 #import "User.h"
 #import "userMarkerView.h"
+#import "MBProgressHUD.h"
 
-@interface SearchViewController ()
+
+@interface SearchViewController ()<MBProgressHUDDelegate>
+{
+    MBProgressHUD  *progressHUD;
+    
+}
+
+
+
 @property UISearchBar *searchBar;
 @property UIView *infoView;
 @property UIImage * userCustomMarker;
 @property NSDictionary *restaurantDict;
 @property NSArray *restaurantArray;
+@property NSArray *userArray;
+@property NSArray *recommendUsers;
+@property UIImage *userButtonImage;
 
 @property (strong, nonatomic) NSMutableDictionary *usersDictionary;
 
@@ -29,6 +41,8 @@
 @property NSString * restaurantName;
 @property NSString * restaurantAddress;
 @property NSString * restaurantTel;
+@property NSString * content;
+@property NSString * recommendName;
 
 @property(nonatomic,strong) UIDynamicAnimator *animator;
 
@@ -44,6 +58,7 @@
 #pragma mark view Life Cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self initializeProgressHUD:@"Loading..."];
     // Do any additional setup after loading the view.
     GMSCameraPosition *camera = [GMSCameraPosition  cameraWithLatitude:25.023868
                                                             longitude:121.528976
@@ -68,7 +83,8 @@
     //User * currentUser = [[User alloc]init];
     //[currentUser getUserData];
     //[currentUser getRestData];
-    [self loadUserData];
+    [self loadRestData];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -77,12 +93,30 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-    GMSMarker *marker = [[GMSMarker alloc] init];
-    marker.position = CLLocationCoordinate2DMake(25.023950, 121.528976);
-    //marker.icon =[UIImage imageNamed:@"pin"];
-    marker.appearAnimation = kGMSMarkerAnimationPop;
-    marker.map = mapView;
+//    GMSMarker *marker = [[GMSMarker alloc] init];
+//    marker.position = CLLocationCoordinate2DMake(25.023950, 121.528976);
+//    //marker.icon =[UIImage imageNamed:@"pin"];
+//    marker.appearAnimation = kGMSMarkerAnimationPop;
+//    marker.map = mapView;
 }
+- (void)initializeProgressHUD:(NSString *)msg
+{
+    if (progressHUD)
+        [progressHUD removeFromSuperview];
+    
+    progressHUD = [[MBProgressHUD alloc] initWithView:self.view];
+    [self.view addSubview:progressHUD];
+    progressHUD.dimBackground = NO;
+    progressHUD.delegate = self;
+    progressHUD.labelText = msg;
+    
+    progressHUD.margin = 20.f;
+    progressHUD.yOffset = 10.f;
+    
+    progressHUD.removeFromSuperViewOnHide = YES;
+    [progressHUD show:YES];
+}
+
 
 -(NSMutableDictionary*) usersDictionary {
     if(!_usersDictionary)
@@ -109,18 +143,6 @@
     
 }
 
--(void)addTestMarker
-{
-    GMSMarker *testMarker = [[GMSMarker alloc]init];
-    testMarker.position= CLLocationCoordinate2DMake(25.023870, 121.5280);
-    UIImageView * imageView =[[UIImageView alloc]init];
-    imageView.image =self.userCustomMarker;
-    
-    //testMarker.icon =[UIImage imageNamed:@"pin"];
-    testMarker.icon =imageView.image;
-    testMarker.map=mapView;
-}
-
 - (void)addMarker{
     double lat = [[gs.geocode objectForKey:@"lat"] doubleValue];
     double lng = [[gs.geocode objectForKey:@"lng"] doubleValue];
@@ -134,65 +156,24 @@
 }
 
 
-#pragma loadData from Parse
-
-//-(void)lodaDataFromParse{
-//
-//    PFQuery *query = [PFQuery queryWithClassName:@"userRecommendData"];
-//    
-//    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-//        if (!error) {
-//            // The find succeeded.
-//            // Do something with the found objects
-//            for (PFObject *object in objects) {
-//                //NSLog(@"%@", object[@"lat"]);
-//                //NSLog(@"%@", object[@"lng"]);
-//                double lat = [object[@"lat"] doubleValue];
-//                double lng = [object[@"lng"] doubleValue];
-//                
-//                GMSMarker * markers = [[GMSMarker alloc]init];
-//                markers.position = CLLocationCoordinate2DMake(lat, lng);
-//                if([object[@"userName"] isEqualToString:@"PiHan Hsu"]){
-//                    markers.icon = [UIImage imageNamed:@"Pihan_Marker80"];
-//                    
-//                }else{
-//                 markers.icon = [UIImage imageNamed:@"Fung_Marker80"];
-//                }
-//                // load image from parse
-//                /*
-//                 PFUser *currentUser = [PFUser currentUser];
-//                 PFFile *imageFile =currentUser[@"FBHeadImage"];
-//                 NSData *imagedata = [imageFile getData];
-//                 markers.icon =[UIImage imageWithData:imagedata];
-//                 */
-//                markers.map = mapView;
-//            }
-//        } else {
-//            // Log details of the failure
-//            NSLog(@"Error: %@ %@", error, [error userInfo]);
-//        }
-//    }];
-//
-//}
-//
 
 #pragma mark loaddata from local
--(void) loadUserData
-{
-    //取user資料
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentDirectiory =[paths objectAtIndex:0];
-    NSString *uploadFile = [NSString stringWithFormat:@"user.json"];
-    
-    NSString *filePathUser = [documentDirectiory stringByAppendingPathComponent:uploadFile];
-    NSData *dataUser = [NSData dataWithContentsOfFile:filePathUser];
-    NSDictionary *userDict = [NSJSONSerialization JSONObjectWithData:dataUser options:kNilOptions error:nil];
-    
-    //NSLog(@"userDict: %@", userDict);
-    
-    [self loadRestData];
-   
-}
+//-(void) loadUserData
+//{
+//    //取user資料
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSString *documentDirectiory =[paths objectAtIndex:0];
+//    NSString *uploadFile = [NSString stringWithFormat:@"user.json"];
+//    
+//    NSString *filePathUser = [documentDirectiory stringByAppendingPathComponent:uploadFile];
+//    NSData *dataUser = [NSData dataWithContentsOfFile:filePathUser];
+//    NSDictionary *userDict = [NSJSONSerialization JSONObjectWithData:dataUser options:kNilOptions error:nil];
+//    
+//    //NSLog(@"userDict: %@", userDict);
+//    
+//    [self loadRestData];
+//   
+//}
 
 //still can't loadRestData
 -(void) loadRestData
@@ -204,164 +185,78 @@
     NSString *filePath = [documentDirectiory stringByAppendingPathComponent:uploadFile];
     NSData *data = [NSData dataWithContentsOfFile:filePath];
     NSDictionary *rest = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-    
+    self.restaurantArray = rest[@"restaurants"];
+    [self displayMarker];
     //NSLog(@"rest: %@", rest);
 
 }
 
-#pragma mark lodaData from Linode
-//-(void)loadData
-//{
-//    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://106.185.53.8/"]];
-//    NSString *token =[FBSession activeSession].accessTokenData.accessToken;
-//    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-//                            token,    @"fb_token"
-//                            , nil];
-//    NSMutableURLRequest *request = [httpClient requestWithMethod:@"POST"
-//                                                            path:@"api/v1/auth/log_in"
-//                                                      parameters:params];
-//   
-//    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-//    [httpClient registerHTTPOperationClass:[AFHTTPRequestOperation class]];
-// 
-//    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-//        
-//#pragma mark - progressed 完成
-//        //載入完成
-//        NSLog(@"Completed!");
-//        NSString *tmp = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-//        //test log
-//        //NSLog(@"Response: %@",tmp);
-//#pragma mark - 轉資料11/26
-//        NSData *rawData = [tmp dataUsingEncoding:NSUTF8StringEncoding];
-//        NSError *e;
-//        
-//        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:rawData options:NSJSONReadingMutableContainers error:&e];
-//        NSLog(@"Data from Fung: %@", dict);
-//        NSString *mobileID = [NSString stringWithFormat:@"%@", [dict objectForKey:@"mobile_id"]];
-//        self.mobileID = mobileID;
-//        [self loadRestaurntData];
-//        
-//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-//        NSLog(@"Error");
-//    }];
-//    
-//    //4. Start傳輸
-//    [operation start];
-//
-//}
-//-(void) loadRestaurntData
-//{
-//    
-//    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://106.185.53.8/"]];
-//    
-//    NSString * mobileID = self.mobileID;
-//    
-//    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-//                            mobileID,    @"mobile_id"
-//                            , nil];
-//    NSMutableURLRequest *request = [httpClient requestWithMethod:@"GET"
-//                                                            path:@"api/v1/maps/index"
-//                                                      parameters:params];
-//    
-//    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-//    [httpClient registerHTTPOperationClass:[AFHTTPRequestOperation class]];
-//    
-//    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-//        
-//        NSLog(@"Completed!");
-//        NSString *tmp = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-//        
-//        NSData *rawData = [tmp dataUsingEncoding:NSUTF8StringEncoding];
-//        NSError *e;
-//        
-//        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:rawData options:NSJSONReadingMutableContainers error:&e];
-//        //NSLog(@"Query2 Data: %@", dict);
-//        self.restaurantDict = dict;
-//        NSString * restaurants = [NSString stringWithFormat:@"%@", [dict objectForKey:@"restaurants"]];
-//        //NSLog(@"Restaurant Data: %@", restaurants);
-//        
-//        NSArray * users = [dict objectForKey:@"users"];
-//        //NSLog(@"users Data: %@", users);
-//        
-//        // load image and do custom marker
-//        
-//        for (int i =1; i< users.count; i++) {
-//            NSString *userPhotoURLString = [NSString stringWithFormat:@"%@", [users[i] objectForKey:@"image"]];
-//            
-//            NSLog(@"URL: %@", userPhotoURLString);
-//            if (userPhotoURLString) {
-//                NSURL *pictureURL = [NSURL URLWithString:userPhotoURLString];
-//                NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
-//                
-//                [NSURLConnection sendAsynchronousRequest:urlRequest
-//                                                   queue:[NSOperationQueue mainQueue]
-//                                       completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-//                                           if (connectionError == nil && data != nil) {
-//                                               
-//                                               userMarkerView *view =  [[[NSBundle mainBundle] loadNibNamed:@"UserMarkerView" owner:self options:nil] objectAtIndex:0];
-//                                               view.userImage.image =[UIImage imageWithData:data];
-//                                               view.userImage.layer.cornerRadius = 18.0f;
-//                                               view.userImage.layer.masksToBounds =YES;
-//                                               
-//                                               UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, 0.0);
-//                                               [view.layer renderInContext:UIGraphicsGetCurrentContext()];
-//                                               
-//                                               UIImage *imageScreen =UIGraphicsGetImageFromCurrentImageContext();
-//                                               UIGraphicsEndImageContext();
-//                                               
-//                                               self.userCustomMarker= imageScreen;
-//                                               [self addTestMarker];
-//                                               
-//                                           } else {
-//                                               NSLog(@"Failed to load profile photo.");
-//                                           }
-//                                       }];
-//            }
-//
-//        }
-//        
-//        
-//        
-//        NSArray * array =[dict objectForKey:@"restaurants"];
-//        NSLog(@"Name: %@", array[0]);
-//        NSLog(@"num: %ld", array.count);
-//        
-//        for (int i =0; i <array.count; i++) {
-//            
-//            self.restaurantName = [array[i] objectForKey:@"name"];
-//            NSLog(@"restaurantName: %@", self.restaurantName);
-//            
-//            NSString *market_lat = [array[i] objectForKey:@"marker_lat"];
-//            double lat = [market_lat doubleValue];
-//            NSLog(@"lat: %f", lat);
-//            
-//            NSString *market_lng = [array[i] objectForKey:@"marker_lng"];
-//            double lng = [market_lng doubleValue];
-//            NSLog(@"lng: %f", lng);
-//            
-//            GMSMarker * markers = [[GMSMarker alloc]init];
-//            markers.position = CLLocationCoordinate2DMake(lat, lng);
-//            markers.userData=[NSString stringWithFormat:@"%@",  [array[i] objectForKey:@"id"]];
-//            UIImageView * imageView =[[UIImageView alloc]init];
-//            imageView.image =self.userCustomMarker;
-//            
-//            //markers.icon =self.userCustomMarker;
-//            markers.map = mapView;
-//        }
-//   
-//        
-//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-//        NSLog(@"Error!!!!!");
-//    }];
-//    
-//    [operation start];
-//
-//}
+-(void)displayMarker
+{
+    for (int i=0 ; i<self.restaurantArray.count; i++) {
+        self.restaurantName = [self.restaurantArray[i] objectForKey:@"name"];
+        NSLog(@"restaurantName: %@", self.restaurantName);
+        
+        NSString *market_lat = [self.restaurantArray[i] objectForKey:@"marker_lat"];
+        double lat = [market_lat doubleValue];
+        NSLog(@"lat: %f", lat);
+        
+        NSString *market_lng = [self.restaurantArray[i] objectForKey:@"marker_lng"];
+        double lng = [market_lng doubleValue];
+        NSLog(@"lng: %f", lng);
+
+        NSArray *recommenderArray = [self.restaurantArray[i] objectForKey:@"user"];
+        
+        if (recommenderArray.count ==1) {
+            
+        NSString *userPhotoURLString = [NSString stringWithFormat:@"%@", [recommenderArray[0] objectForKey:@"image"]];
+        //NSLog(@"URL: %@", userPhotoURLString);
+            
+         if (userPhotoURLString) {
+            NSURL *pictureURL = [NSURL URLWithString:userPhotoURLString];
+            NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
+        [NSURLConnection sendAsynchronousRequest:urlRequest
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                                        if (connectionError == nil && data != nil) {
+            
+                                        userMarkerView *view =  [[[NSBundle mainBundle] loadNibNamed:@"UserMarkerView" owner:self options:nil] objectAtIndex:0];
+                                        view.userImage.image =[UIImage imageWithData:data];
+                                        view.userImage.layer.cornerRadius = 18.0f;
+                                        view.userImage.layer.masksToBounds =YES;
+               UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, 0.0);
+               [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+                UIImage *imageScreen =UIGraphicsGetImageFromCurrentImageContext();
+                UIGraphicsEndImageContext();
+
+                GMSMarker * markers = [[GMSMarker alloc]init];
+                  markers.position = CLLocationCoordinate2DMake(lat, lng);
+                  markers.icon =imageScreen;
+                  markers.map = mapView;
+                  markers.userData=[NSString stringWithFormat:@"%@",  [self.restaurantArray[i] objectForKey:@"id"]];
+            
+                } else {
+                NSLog(@"Failed to load photo for Market");
+                                                       }
+                                   
+                                                   }];
+                        }
+        }
+        if (i == (self.restaurantArray.count) -1){
+            NSLog(@"display markers done!");
+            [progressHUD hide:YES];
+            
+        }
+        }
+    
+    
+}
 
 
 
-#pragma markers
+#pragma mark markers and InfoWindow
+
+
 
 - (BOOL)mapView:(GMSMapView *)mapView1 didTapMarker:(GMSMarker *)marker
 {
@@ -374,29 +269,57 @@
     
     NSLog(@"restaurantID: %@", marker.userData);
     self.restaurantID =marker.userData;
-    self.restaurantArray = [self.restaurantDict objectForKey:@"restaurants"];
     
-    NSLog(@"self.Array: %@", self.restaurantArray);
     for (int i = 0; i < self.restaurantArray.count; i++) {
-        NSDictionary *d =self.restaurantArray[i] ;
-        NSString *s = [NSString stringWithFormat:@"%@", d[@"id"]];
-        NSLog(@"s : %@",s);
+        NSDictionary *restaurantDict =self.restaurantArray[i] ;
+        NSString *rID = [NSString stringWithFormat:@"%@", restaurantDict[@"id"]];
         
-        if ( [s isEqualToString:self.restaurantID]) {
-            self.restaurantName = d[@"name"];
-            self.restaurantAddress =d[@"address"];
-            self.restaurantTel = d[@"phone_number"];
-            NSLog(@"self.rest name: %@", self.restaurantName);
-            break;
-        }
-    }
+        if ( [rID isEqualToString:self.restaurantID]) {
+            self.restaurantName = restaurantDict[@"name"];
+            self.restaurantAddress =restaurantDict[@"address"];
+            self.restaurantTel = restaurantDict[@"phone_number"];
+            
+            NSArray *recommenderArray = restaurantDict[@"user"];
+            NSLog(@"number of User: %d", recommenderArray.count);
+            if (recommenderArray.count==1) {
+                NSDictionary * recommendUserDict = recommenderArray[0];
+                self.content = recommendUserDict[@"content"];
+                self.recommendName =recommendUserDict[@"name"];
+                NSString *userPhotoURLString = [NSString stringWithFormat:@"%@", [recommenderArray[0] objectForKey:@"image"]];
+                NSURL *pictureURL = [NSURL URLWithString:userPhotoURLString];
+                NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
+                [NSURLConnection sendAsynchronousRequest:urlRequest
+                                                   queue:[NSOperationQueue mainQueue]
+                                       completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                                           if (connectionError == nil && data != nil) {
+                                               
+                                               UIImageView *recommenderImageView=[[UIImageView alloc]initWithImage:[UIImage imageWithData:data]];
+                                               recommenderImageView.layer.cornerRadius
+                                                                                  = 25.0f;
+                                                                                  recommenderImageView.layer.masksToBounds=YES;
+                                               UIGraphicsBeginImageContextWithOptions(recommenderImageView.frame.size, NO, 0.0);
+                                               [recommenderImageView.layer renderInContext:UIGraphicsGetCurrentContext()];
+                                               UIImage *imageScreen =UIGraphicsGetImageFromCurrentImageContext();
+                                               UIGraphicsEndImageContext();
+                                               self.userButtonImage =imageScreen;
+                                               [self displayInforWindowData];
 
+                                            
+                                                                                  }
+                                       }];
+            
+    }
+        }
+        
+    }
     
-    
+            
+        
+        
+        
     mapView1.selectedMarker = marker;
 
-    [self loadDateForInfoView];
-    [mapView1 addSubview:self.infoView];
+    
     //[self.view addSubview:self.infoView];
     //[self willShow];
 
@@ -411,22 +334,25 @@ didTapAtCoordinate:(CLLocationCoordinate2D)coordinate
     //self.infoView.hidden =YES;
 }
 
-#pragma loadData for InfoWindow
--(void) loadDateForInfoView
+#pragma mark diaplyData for InfoWindow
+-(void) displayInforWindowData
 {
-    infoWindowView *view =  [[[NSBundle mainBundle] loadNibNamed:@"infoWindowView" owner:self options:nil] objectAtIndex:0];
+    infoWindowView *infoView =  [[[NSBundle mainBundle] loadNibNamed:@"infoWindowView" owner:self options:nil] objectAtIndex:0];
+    self.infoView = infoView;
+
+    infoView.restaurantName.text =self.restaurantName;
+    infoView.address.text=self.restaurantAddress;
+    infoView.tel.text=self.restaurantTel;
+    infoView.contentLabel.text=self.content;
+    infoView.userNameLabel.text =self.recommendName;
     
-    self.infoView = view;
+    [infoView.userButton setImage:self.userButtonImage forState:UIControlStateNormal];
     
-    view.restaurantName.text =self.restaurantName;
-    view.address.text=self.restaurantAddress;
-    view.tel.text=self.restaurantTel;
+    infoView.center = CGPointMake(self.view.center.x, self.view.center.y-80);
+    infoView.layer.cornerRadius = 10.0f;
+    infoView.layer.masksToBounds = YES;
     
-    view.center = CGPointMake(self.view.center.x, self.view.center.y-80);
-    view.layer.cornerRadius = 10.0f;
-    view.layer.masksToBounds = YES;
-    
-    
+    [mapView addSubview:self.infoView];
 }
 
 #pragma mark Animation
@@ -454,6 +380,199 @@ didTapAtCoordinate:(CLLocationCoordinate2D)coordinate
     
 }
 
+#pragma mark lodaData from Linode
+//-(void)loadData
+//{
+//    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://106.185.53.8/"]];
+//    NSString *token =[FBSession activeSession].accessTokenData.accessToken;
+//    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+//                            token,    @"fb_token"
+//                            , nil];
+//    NSMutableURLRequest *request = [httpClient requestWithMethod:@"POST"
+//                                                            path:@"api/v1/auth/log_in"
+//                                                      parameters:params];
+//
+//    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+//    [httpClient registerHTTPOperationClass:[AFHTTPRequestOperation class]];
+//
+//    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+//
+//#pragma mark - progressed 完成
+//        //載入完成
+//        NSLog(@"Completed!");
+//        NSString *tmp = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+//        //test log
+//        //NSLog(@"Response: %@",tmp);
+//#pragma mark - 轉資料11/26
+//        NSData *rawData = [tmp dataUsingEncoding:NSUTF8StringEncoding];
+//        NSError *e;
+//
+//        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:rawData options:NSJSONReadingMutableContainers error:&e];
+//        NSLog(@"Data from Fung: %@", dict);
+//        NSString *mobileID = [NSString stringWithFormat:@"%@", [dict objectForKey:@"mobile_id"]];
+//        self.mobileID = mobileID;
+//        [self loadRestaurntData];
+//
+//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//        NSLog(@"Error");
+//    }];
+//
+//    //4. Start傳輸
+//    [operation start];
+//
+//}
+//-(void) loadRestaurntData
+//{
+//
+//    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://106.185.53.8/"]];
+//
+//    NSString * mobileID = self.mobileID;
+//
+//    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+//                            mobileID,    @"mobile_id"
+//                            , nil];
+//    NSMutableURLRequest *request = [httpClient requestWithMethod:@"GET"
+//                                                            path:@"api/v1/maps/index"
+//                                                      parameters:params];
+//
+//    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+//    [httpClient registerHTTPOperationClass:[AFHTTPRequestOperation class]];
+//
+//    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+//
+//        NSLog(@"Completed!");
+//        NSString *tmp = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+//
+//        NSData *rawData = [tmp dataUsingEncoding:NSUTF8StringEncoding];
+//        NSError *e;
+//
+//        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:rawData options:NSJSONReadingMutableContainers error:&e];
+//        //NSLog(@"Query2 Data: %@", dict);
+//        self.restaurantDict = dict;
+//        NSString * restaurants = [NSString stringWithFormat:@"%@", [dict objectForKey:@"restaurants"]];
+//        //NSLog(@"Restaurant Data: %@", restaurants);
+//
+//        NSArray * users = [dict objectForKey:@"users"];
+//        //NSLog(@"users Data: %@", users);
+//
+//        // load image and do custom marker
+//
+//        for (int i =1; i< users.count; i++) {
+//            NSString *userPhotoURLString = [NSString stringWithFormat:@"%@", [users[i] objectForKey:@"image"]];
+//
+//            NSLog(@"URL: %@", userPhotoURLString);
+//            if (userPhotoURLString) {
+//                NSURL *pictureURL = [NSURL URLWithString:userPhotoURLString];
+//                NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
+//
+//                [NSURLConnection sendAsynchronousRequest:urlRequest
+//                                                   queue:[NSOperationQueue mainQueue]
+//                                       completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+//                                           if (connectionError == nil && data != nil) {
+//
+//                                               userMarkerView *view =  [[[NSBundle mainBundle] loadNibNamed:@"UserMarkerView" owner:self options:nil] objectAtIndex:0];
+//                                               view.userImage.image =[UIImage imageWithData:data];
+//                                               view.userImage.layer.cornerRadius = 18.0f;
+//                                               view.userImage.layer.masksToBounds =YES;
+//
+//                                               UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, 0.0);
+//                                               [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+//
+//                                               UIImage *imageScreen =UIGraphicsGetImageFromCurrentImageContext();
+//                                               UIGraphicsEndImageContext();
+//
+//                                               self.userCustomMarker= imageScreen;
+//                                               [self addTestMarker];
+//
+//                                           } else {
+//                                               NSLog(@"Failed to load profile photo.");
+//                                           }
+//                                       }];
+//            }
+//
+//        }
+//
+//
+//
+//        NSArray * array =[dict objectForKey:@"restaurants"];
+//        NSLog(@"Name: %@", array[0]);
+//        NSLog(@"num: %ld", array.count);
+//
+//        for (int i =0; i <array.count; i++) {
+//
+//            self.restaurantName = [array[i] objectForKey:@"name"];
+//            NSLog(@"restaurantName: %@", self.restaurantName);
+//
+//            NSString *market_lat = [array[i] objectForKey:@"marker_lat"];
+//            double lat = [market_lat doubleValue];
+//            NSLog(@"lat: %f", lat);
+//
+//            NSString *market_lng = [array[i] objectForKey:@"marker_lng"];
+//            double lng = [market_lng doubleValue];
+//            NSLog(@"lng: %f", lng);
+//
+//            GMSMarker * markers = [[GMSMarker alloc]init];
+//            markers.position = CLLocationCoordinate2DMake(lat, lng);
+//            markers.userData=[NSString stringWithFormat:@"%@",  [array[i] objectForKey:@"id"]];
+//            UIImageView * imageView =[[UIImageView alloc]init];
+//            imageView.image =self.userCustomMarker;
+//
+//            //markers.icon =self.userCustomMarker;
+//            markers.map = mapView;
+//        }
+//
+//
+//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//        NSLog(@"Error!!!!!");
+//    }];
+//
+//    [operation start];
+//
+//}
+
+
+
+#pragma mark loadData from Parse
+
+//-(void)lodaDataFromParse{
+//
+//    PFQuery *query = [PFQuery queryWithClassName:@"userRecommendData"];
+//
+//    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+//        if (!error) {
+//            // The find succeeded.
+//            // Do something with the found objects
+//            for (PFObject *object in objects) {
+//                //NSLog(@"%@", object[@"lat"]);
+//                //NSLog(@"%@", object[@"lng"]);
+//                double lat = [object[@"lat"] doubleValue];
+//                double lng = [object[@"lng"] doubleValue];
+//
+//                GMSMarker * markers = [[GMSMarker alloc]init];
+//                markers.position = CLLocationCoordinate2DMake(lat, lng);
+//                if([object[@"userName"] isEqualToString:@"PiHan Hsu"]){
+//                    markers.icon = [UIImage imageNamed:@"Pihan_Marker80"];
+//
+//                }else{
+//                 markers.icon = [UIImage imageNamed:@"Fung_Marker80"];
+//                }
+//                // load image from parse
+//                /*
+//                 PFUser *currentUser = [PFUser currentUser];
+//                 PFFile *imageFile =currentUser[@"FBHeadImage"];
+//                 NSData *imagedata = [imageFile getData];
+//                 markers.icon =[UIImage imageWithData:imagedata];
+//                 */
+//                markers.map = mapView;
+//            }
+//        } else {
+//            // Log details of the failure
+//            NSLog(@"Error: %@ %@", error, [error userInfo]);
+//        }
+//    }];
+//
+//}
+//
 
 
 /*
