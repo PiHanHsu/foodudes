@@ -15,9 +15,10 @@
 #import "User.h"
 #import "userMarkerView.h"
 #import "MBProgressHUD.h"
+#import "AddItemTableViewController.h"
 
 
-@interface SearchViewController ()<MBProgressHUDDelegate>
+@interface SearchViewController ()<MBProgressHUDDelegate, UIScrollViewDelegate>
 {
     MBProgressHUD  *progressHUD;
     
@@ -33,6 +34,10 @@
 @property NSArray *userArray;
 @property NSArray *recommendUsers;
 @property UIImage *userButtonImage;
+@property NSMutableArray *contentArray;
+@property NSMutableArray *recommendUserArray;
+@property UIScrollView *contentScrollView;
+
 
 @property (strong, nonatomic) NSMutableDictionary *usersDictionary;
 
@@ -59,30 +64,32 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initializeProgressHUD:@"Loading..."];
-    // Do any additional setup after loading the view.
-    GMSCameraPosition *camera = [GMSCameraPosition  cameraWithLatitude:25.023868
-                                                            longitude:121.528976
-                                                                 zoom:15];
+    
+    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:25.023868 longitude:121.528976 zoom:15 bearing:0 viewingAngle:50];
+    
     mapView = [GMSMapView mapWithFrame:CGRectZero camera:camera];
+    
     mapView.frame = CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height);
     mapView.myLocationEnabled = YES;
     mapView.delegate = self;
     self.searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 30)];
     self.searchBar.showsSearchResultsButton=YES;
     self.searchBar.searchBarStyle = UIBarStyleDefault;
-    self.searchBar.placeholder=@"輸入地點,例如：北投、淡水...";
+    self.searchBar.placeholder=@"輸入地點,例如：台北北投、台北淡水...";
     self.searchBar.delegate=self;
     
     [self.view addSubview:self.searchBar];
     [self.view insertSubview:mapView atIndex:0];
     gs = [[GCGeocodingService alloc] init];
+    
+    self.contentScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 65, 270, 170)];
+    //self.contentScrollView.backgroundColor = [UIColor greenColor];
+    
+    
     //[self lodaDataFromParse];
     //[self loadData];
     //[self loadDateForInfoView];
-    
-    //User * currentUser = [[User alloc]init];
-    //[currentUser getUserData];
-    //[currentUser getRestData];
+ 
     [self loadRestData];
     
 }
@@ -146,36 +153,19 @@
 - (void)addMarker{
     double lat = [[gs.geocode objectForKey:@"lat"] doubleValue];
     double lng = [[gs.geocode objectForKey:@"lng"] doubleValue];
-    GMSMarker *options = [[GMSMarker alloc] init];
-    options.position = CLLocationCoordinate2DMake(lat, lng);
-    options.title = [gs.geocode objectForKey:@"address"];
-    options.appearAnimation= kGMSMarkerAnimationPop;
+//    GMSMarker *options = [[GMSMarker alloc] init];
+//    options.position = CLLocationCoordinate2DMake(lat, lng);
+//    options.title = [gs.geocode objectForKey:@"address"];
+//    options.appearAnimation= kGMSMarkerAnimationPop;
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:lat                                                                longitude:lng                                                        zoom:15];
     [mapView setCamera:camera];
-    options.map=mapView;
+    //options.map=mapView;
 }
 
 
 
 #pragma mark loaddata from local
-//-(void) loadUserData
-//{
-//    //取user資料
-//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//    NSString *documentDirectiory =[paths objectAtIndex:0];
-//    NSString *uploadFile = [NSString stringWithFormat:@"user.json"];
-//    
-//    NSString *filePathUser = [documentDirectiory stringByAppendingPathComponent:uploadFile];
-//    NSData *dataUser = [NSData dataWithContentsOfFile:filePathUser];
-//    NSDictionary *userDict = [NSJSONSerialization JSONObjectWithData:dataUser options:kNilOptions error:nil];
-//    
-//    //NSLog(@"userDict: %@", userDict);
-//    
-//    [self loadRestData];
-//   
-//}
 
-//still can't loadRestData
 -(void) loadRestData
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -195,22 +185,22 @@
 {
     for (int i=0 ; i<self.restaurantArray.count; i++) {
         self.restaurantName = [self.restaurantArray[i] objectForKey:@"name"];
-        NSLog(@"restaurantName: %@", self.restaurantName);
+        //NSLog(@"restaurantName: %@", self.restaurantName);
         
         NSString *market_lat = [self.restaurantArray[i] objectForKey:@"marker_lat"];
         double lat = [market_lat doubleValue];
-        NSLog(@"lat: %f", lat);
+        //NSLog(@"lat: %f", lat);
         
         NSString *market_lng = [self.restaurantArray[i] objectForKey:@"marker_lng"];
         double lng = [market_lng doubleValue];
-        NSLog(@"lng: %f", lng);
+        //NSLog(@"lng: %f", lng);
 
         NSArray *recommenderArray = [self.restaurantArray[i] objectForKey:@"user"];
         
+        //NSLog(@"recommender: %lu", recommenderArray.count);
         if (recommenderArray.count ==1) {
             
         NSString *userPhotoURLString = [NSString stringWithFormat:@"%@", [recommenderArray[0] objectForKey:@"image"]];
-        //NSLog(@"URL: %@", userPhotoURLString);
             
          if (userPhotoURLString) {
             NSURL *pictureURL = [NSURL URLWithString:userPhotoURLString];
@@ -235,24 +225,72 @@
                   markers.map = mapView;
                   markers.userData=[NSString stringWithFormat:@"%@",  [self.restaurantArray[i] objectForKey:@"id"]];
             
-                } else {
-                NSLog(@"Failed to load photo for Market");
-                                                       }
-                                   
-                                                   }];
-                        }
-        }
+                }                                }];
+         }
+        }else if (recommenderArray.count >1){
+             
+             NSString *userPhotoURLString = [NSString stringWithFormat:@"%@", [recommenderArray[0] objectForKey:@"image"]];
+             //NSLog(@"URL: %@", userPhotoURLString);
+             
+             if (userPhotoURLString) {
+                 NSURL *pictureURL = [NSURL URLWithString:userPhotoURLString];
+                 NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
+                 [NSURLConnection sendAsynchronousRequest:urlRequest
+                                                    queue:[NSOperationQueue mainQueue]
+                                        completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                                            if (connectionError == nil && data != nil) {
+                                                
+                                                userMarkerView *view =  [[[NSBundle mainBundle] loadNibNamed:@"UserMarkerView" owner:self options:nil] objectAtIndex:0];
+                                                view.userImage.image =[UIImage imageWithData:data];
+                                                view.userImage.layer.cornerRadius = 18.0f;
+                                                view.userImage.layer.masksToBounds =YES;
+                                                
+                                                UILabel *numLable = [[UILabel alloc] initWithFrame:CGRectMake(30,0, 20, 20)];
+                                                numLable.backgroundColor =[UIColor redColor];
+                                                numLable.text = [NSString stringWithFormat:@"%lu",recommenderArray.count];
+                                                numLable.textColor =[UIColor whiteColor];
+                                                numLable.textAlignment=UITextAlignmentCenter;
+                                                numLable.layer.cornerRadius =10.0f;
+                                                numLable.layer.masksToBounds =YES;
+                                                [view addSubview:numLable];
+                                                UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, 0.0);
+                                                [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+                                                UIImage *imageScreen =UIGraphicsGetImageFromCurrentImageContext();
+                                                UIGraphicsEndImageContext();
+                                                
+                                                GMSMarker * markers = [[GMSMarker alloc]init];
+                                                markers.position = CLLocationCoordinate2DMake(lat, lng);
+                                                markers.icon =imageScreen;
+                                                markers.map = mapView;
+                                                markers.userData=[NSString stringWithFormat:@"%@",  [self.restaurantArray[i] objectForKey:@"id"]];
+                                                
+                                                
+                                                //NSLog(@"Failed to load photo for Market");
+                                            }
+                                            
+                                        }];
+             }
+         }
+
+            
         if (i == (self.restaurantArray.count) -1){
             NSLog(@"display markers done!");
             [progressHUD hide:YES];
             
         }
-        }
-    
-    
+        
+         
+        
+    }
 }
 
 
+#pragma mark custom marker method
+
+-(UIImage *) NSURL:(NSURL *)userPhotoURLString NSURLRequest:(NSURLRequest *)urlRequest
+{
+    return nil;
+}
 
 #pragma mark markers and InfoWindow
 
@@ -278,53 +316,89 @@
             self.restaurantName = restaurantDict[@"name"];
             self.restaurantAddress =restaurantDict[@"address"];
             self.restaurantTel = restaurantDict[@"phone_number"];
-            
-            NSArray *recommenderArray = restaurantDict[@"user"];
-            NSLog(@"number of User: %d", recommenderArray.count);
-            if (recommenderArray.count==1) {
-                NSDictionary * recommendUserDict = recommenderArray[0];
-                self.content = recommendUserDict[@"content"];
-                self.recommendName =recommendUserDict[@"name"];
-                NSString *userPhotoURLString = [NSString stringWithFormat:@"%@", [recommenderArray[0] objectForKey:@"image"]];
-                NSURL *pictureURL = [NSURL URLWithString:userPhotoURLString];
-                NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
-                [NSURLConnection sendAsynchronousRequest:urlRequest
-                                                   queue:[NSOperationQueue mainQueue]
-                                       completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                                           if (connectionError == nil && data != nil) {
-                                               
-                                               UIImageView *recommenderImageView=[[UIImageView alloc]initWithImage:[UIImage imageWithData:data]];
-                                               recommenderImageView.layer.cornerRadius
-                                                                                  = 25.0f;
-                                                                                  recommenderImageView.layer.masksToBounds=YES;
-                                               UIGraphicsBeginImageContextWithOptions(recommenderImageView.frame.size, NO, 0.0);
-                                               [recommenderImageView.layer renderInContext:UIGraphicsGetCurrentContext()];
-                                               UIImage *imageScreen =UIGraphicsGetImageFromCurrentImageContext();
-                                               UIGraphicsEndImageContext();
-                                               self.userButtonImage =imageScreen;
-                                               [self displayInforWindowData];
-
-                                            
-                                                                                  }
-                                       }];
-            
-    }
+            self.recommendUserArray =restaurantDict[@"user"];
+            //NSLog(@"recommender num: %lu", self.recommendUserArray.count );
+            [self loadingRecommendContent];
+            break;
         }
-        
     }
-    
-            
-        
-        
-        
     mapView1.selectedMarker = marker;
-
-    
-    //[self.view addSubview:self.infoView];
-    //[self willShow];
 
     return YES;
 }
+
+-(void)loadingRecommendContent
+{
+    [self.infoView removeFromSuperview];
+    [self.contentScrollView removeFromSuperview];
+    
+    int user_count = [[NSString stringWithFormat:@"%lu", self.recommendUserArray.count] intValue];
+        
+        for (int i = 0; i < user_count; i++) {
+            NSDictionary * recommendUserDict = self.recommendUserArray[i];
+            
+            NSInteger y = 5 + (180 * i);
+            UIView *contentView = [[UIView alloc]initWithFrame:CGRectMake(5, y, 260, 170)];
+            contentView.backgroundColor = [UIColor lightGrayColor];
+            contentView.layer.cornerRadius =10.0f;
+            contentView.layer.masksToBounds =YES;
+            
+            UITextView * contentTextView = [[UITextView alloc]initWithFrame:CGRectMake(5, 55, 250, 100)];
+            contentTextView.backgroundColor = [UIColor whiteColor];
+            contentTextView.textColor = [UIColor blackColor];
+            NSString * content = [recommendUserDict[@"content"] stringByReplacingOccurrencesOfString:@" \n" withString:@"\n"];
+            
+            contentTextView.text =content;
+            //NSLog(@"Content: %@", contentTextView.text);
+            
+            contentTextView.editable =NO;
+            UIButton * userButton = [[UIButton alloc]initWithFrame:CGRectMake(5, 5, 50, 50)];
+            
+            UILabel *userLabel = [[UILabel alloc]initWithFrame:CGRectMake(70, 10, 150, 30)];
+            
+            userLabel.text =[NSString stringWithFormat:@"%@ 推薦",recommendUserDict[@"name"]];
+            userLabel.textColor = [UIColor blackColor];
+            NSString *userPhotoURLString = [NSString stringWithFormat:@"%@", [self.recommendUserArray[i] objectForKey:@"image"]];
+            NSURL *pictureURL = [NSURL URLWithString:userPhotoURLString];
+            NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
+            [NSURLConnection sendAsynchronousRequest:urlRequest
+                                               queue:[NSOperationQueue mainQueue]
+                                   completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                                       if (connectionError == nil && data != nil) {
+                                           
+                                           UIImageView *recommenderImageView=[[UIImageView alloc]initWithImage:[UIImage imageWithData:data]];
+                                           recommenderImageView.layer.cornerRadius
+                                           = 25.0f;
+                                           recommenderImageView.layer.masksToBounds=YES;
+                                           UIGraphicsBeginImageContextWithOptions(recommenderImageView.frame.size, NO, 0.0);
+                                           [recommenderImageView.layer renderInContext:UIGraphicsGetCurrentContext()];
+                                           UIImage *imageScreen =UIGraphicsGetImageFromCurrentImageContext();
+                                           UIGraphicsEndImageContext();
+                                           [userButton setImage:imageScreen forState:UIControlStateNormal];
+                                           
+                                           
+                                           [contentView addSubview:contentTextView];
+                                           [contentView addSubview:userLabel];
+                                           [contentView addSubview:userButton];
+                                           
+                                           [self.contentScrollView addSubview:contentView];
+                                       }
+                                   }];
+            if (i == (user_count -1)) {
+                NSInteger h = 190 + (190 * (self.recommendUserArray.count-1));
+                
+                self.contentScrollView.contentSize = CGSizeMake(260, h);
+                [self displayInfoWindowData];
+                break;
+            }
+            
+        }
+        
+    
+ 
+}
+
+
 - (void)mapView:(GMSMapView *)mapView
 didTapAtCoordinate:(CLLocationCoordinate2D)coordinate
 {
@@ -334,20 +408,32 @@ didTapAtCoordinate:(CLLocationCoordinate2D)coordinate
     //self.infoView.hidden =YES;
 }
 
+- (void)mapView:(GMSMapView *)mapView
+didChangeCameraPosition:(GMSCameraPosition *)position{
+//    self.infoView.hidden =YES;
+//    [self.searchBar resignFirstResponder];
+//    
+}
+
 #pragma mark diaplyData for InfoWindow
--(void) displayInforWindowData
+-(void) displayInfoWindowData
 {
     infoWindowView *infoView =  [[[NSBundle mainBundle] loadNibNamed:@"infoWindowView" owner:self options:nil] objectAtIndex:0];
     self.infoView = infoView;
-
+    
     infoView.restaurantName.text =self.restaurantName;
     infoView.address.text=self.restaurantAddress;
     infoView.tel.text=self.restaurantTel;
-    infoView.contentLabel.text=self.content;
-    infoView.userNameLabel.text =self.recommendName;
+    [infoView addSubview:self.contentScrollView];
+    UIButton * shareButton = [[UIButton alloc]initWithFrame:CGRectMake(120, 245, 150, 20)];
     
-    [infoView.userButton setImage:self.userButtonImage forState:UIControlStateNormal];
+    [shareButton setTitle:@"加入我的推薦清單" forState:UIControlStateNormal];
+    [shareButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    shareButton.titleLabel.font = [UIFont systemFontOfSize:13];
     
+    [shareButton addTarget:self action:@selector(goAddItemPage:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [infoView addSubview:shareButton];
     infoView.center = CGPointMake(self.view.center.x, self.view.center.y-80);
     infoView.layer.cornerRadius = 10.0f;
     infoView.layer.masksToBounds = YES;
@@ -379,6 +465,28 @@ didTapAtCoordinate:(CLLocationCoordinate2D)coordinate
     [self.animator addBehavior:itemBehaviour];
     
 }
+
+#pragma mark push to AddItemPage
+
+- (void)goAddItemPage:(id)sender
+{
+
+    [self _ViewControllerAnimated:YES];
+    
+}
+
+- (void)_ViewControllerAnimated:(BOOL)animated {
+    [self.tabBarController setSelectedIndex:0];
+    UINavigationController *navController = [[self.tabBarController viewControllers] objectAtIndex:0];
+    AddItemTableViewController *addItemVC = [[navController viewControllers] objectAtIndex:0];
+      addItemVC.nameTextField.text = @"test";
+//    addItemVC.addressTextField.text = self.restaurantAddress;
+//    addItemVC.telTextField.text = self.restaurantTel;
+    
+
+}
+
+
 
 #pragma mark lodaData from Linode
 //-(void)loadData

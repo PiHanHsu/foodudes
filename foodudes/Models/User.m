@@ -14,8 +14,9 @@
 @implementation User
 -(void) getUserData{
     
-    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://106.185.53.8/"]];
+    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://beta.foodudes.co/"]];
     NSString *token =[FBSession activeSession].accessTokenData.accessToken;
+    NSLog(@"token: %@",token);
     NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
                             token,    @"fb_token"
                             , nil];
@@ -50,25 +51,21 @@
         NSString *filePath = [documentDirectiory stringByAppendingPathComponent:uploadFile];
         
         [jsondata writeToFile:filePath atomically:YES];
- 
-        //NSLog(@"Data from Fung: %@", dict);
         
-//        NSString *email= [NSString stringWithFormat:@"%@", [dict objectForKey:@"email"]];
-//        NSString *fooduduesID = [NSString stringWithFormat:@"%@", [dict objectForKey:@"id"]];
-//        NSString *photoURL = [NSString stringWithFormat:@"%@", [dict objectForKey:@"image"]];
-//        NSString *mobileID = [NSString stringWithFormat:@"%@", [dict objectForKey:@"mobile_id"]];
-//        NSString *name = [NSString stringWithFormat:@"%@", [dict objectForKey:@"name"]];
-//        
-//        self.email=email;
-//        self.userID =fooduduesID;
-//        self.userPhotoURL=photoURL;
-//        self.mobileID=mobileID;
-//        self.userName=name;
-       
-        //NSLog(@"user name: %@", self.userName);
+        NSString *fooduduesID = [NSString stringWithFormat:@"%@", [dict objectForKey:@"id"]];
+        self.mobileID = [NSString stringWithFormat:@"%@", [dict objectForKey:@"mobile_id"]];
+        
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        
+        [defaults setObject:fooduduesID forKey:@"userID"];
+        [defaults setObject:self.mobileID  forKey:@"mobile_ID"];
+        
+        [defaults synchronize];
+
         [self getRestData];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error");
+        NSLog(@"Error to load login data");
     }];
     
     //4. Start傳輸
@@ -81,6 +78,7 @@
         AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://106.185.53.8/"]];
     
         NSString * mobileID = self.mobileID;
+    NSLog(@"mobileID: %@", mobileID);
     
         NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
                                 mobileID,    @"mobile_id"
@@ -118,7 +116,7 @@
             
             
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Error!!!!!");
+            NSLog(@"Error to load rest data");
         }];
         
         [operation start];

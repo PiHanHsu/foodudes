@@ -12,6 +12,8 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import "AFNetworking.h"
 #import "User.h"
+#import "AddItemView.h"
+
 
 @interface AddItemViewController ()<UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate>
 
@@ -19,6 +21,7 @@
 @property(strong, nonatomic) NSString * mobileID;
 @property UISearchBar *searchBar;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+
 
 @end
 
@@ -35,7 +38,7 @@
     self.searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 30)];
     self.searchBar.showsSearchResultsButton=YES;
     self.searchBar.searchBarStyle = UIBarStyleDefault;
-    self.searchBar.placeholder=@"搜尋餐廳";
+    self.searchBar.placeholder=@"新增餐廳";
     self.searchBar.delegate=self;
     
     [self.view addSubview:self.searchBar];
@@ -79,6 +82,19 @@
     cell.imageView.image = [UIImage imageNamed:@"restaurant"];
     
     return cell;
+    
+}
+- (IBAction)addButtonPressed:(id)sender {
+    
+    AddItemView *itemView =  [[[NSBundle mainBundle] loadNibNamed:@"AddItemView" owner:self options:nil] objectAtIndex:0];
+    
+    itemView.center = self.view.center;
+    itemView.layer.cornerRadius =10.f;
+    itemView.layer.masksToBounds =YES;
+    
+    
+    [self.view addSubview:itemView];
+    
     
 }
 

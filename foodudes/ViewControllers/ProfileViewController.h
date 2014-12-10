@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface ProfileViewController : UIViewController
-@property (weak, nonatomic) IBOutlet UIImageView *headImageView;
+
 @property (weak, nonatomic) IBOutlet UILabel *displayNameLabel;
 
 @end

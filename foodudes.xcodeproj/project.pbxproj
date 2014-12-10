@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		8DC17CA6ED2031E0E1B9DBE7 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43E59F99D58FC7249EA4C8D6 /* libPods.a */; };
 		E81200EA1A330814001BB680 /* background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E81200E91A330814001BB680 /* background@2x.png */; };
+		E834A1571A359F5D00A2F191 /* AddItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E834A1561A359F5D00A2F191 /* AddItemView.xib */; };
+		E834A15A1A35A37900A2F191 /* AddItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = E834A1591A35A37900A2F191 /* AddItemView.m */; };
+		E854F8A31A37F60300A466D5 /* AddItemTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E854F8A21A37F60300A466D5 /* AddItemTableViewController.m */; };
 		E85DEB941A2EE53200ADE57A /* pin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E85DEB931A2EE53200ADE57A /* pin@2x.png */; };
 		E870BA231A21EE3D00D81294 /* Logo for login.png in Resources */ = {isa = PBXBuildFile; fileRef = E870BA221A21EE3D00D81294 /* Logo for login.png */; };
 		E870BA251A21F73500D81294 /* WilBeck.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E870BA241A21F73500D81294 /* WilBeck.jpg */; };
@@ -69,6 +72,11 @@
 		43E59F99D58FC7249EA4C8D6 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E68D1ED86FDAB2FB7E68736 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		E81200E91A330814001BB680 /* background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background@2x.png"; sourceTree = "<group>"; };
+		E834A1561A359F5D00A2F191 /* AddItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = AddItemView.xib; path = ../ViewControllers/AddItemView.xib; sourceTree = "<group>"; };
+		E834A1581A35A37900A2F191 /* AddItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddItemView.h; sourceTree = "<group>"; };
+		E834A1591A35A37900A2F191 /* AddItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddItemView.m; sourceTree = "<group>"; };
+		E854F8A11A37F60300A466D5 /* AddItemTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddItemTableViewController.h; sourceTree = "<group>"; };
+		E854F8A21A37F60300A466D5 /* AddItemTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddItemTableViewController.m; sourceTree = "<group>"; };
 		E85DEB931A2EE53200ADE57A /* pin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pin@2x.png"; sourceTree = "<group>"; };
 		E870BA221A21EE3D00D81294 /* Logo for login.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Logo for login.png"; sourceTree = "<group>"; };
 		E870BA241A21F73500D81294 /* WilBeck.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = WilBeck.jpg; sourceTree = "<group>"; };
@@ -114,8 +122,8 @@
 		E8985B2C1A1C8AD4004845DF /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
 		E8985B2E1A1C8AE3004845DF /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
 		E8985B2F1A1C8AE3004845DF /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileViewController.m; sourceTree = "<group>"; };
-		E8985B311A1C8AF9004845DF /* AddItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddItemViewController.h; sourceTree = "<group>"; };
-		E8985B321A1C8AF9004845DF /* AddItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddItemViewController.m; sourceTree = "<group>"; };
+		E8985B311A1C8AF9004845DF /* AddItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddItemViewController.h; path = ViewControllers/AddItemViewController.h; sourceTree = "<group>"; };
+		E8985B321A1C8AF9004845DF /* AddItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AddItemViewController.m; path = ViewControllers/AddItemViewController.m; sourceTree = "<group>"; };
 		E8985B351A1C8BD7004845DF /* GCGeocodingService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCGeocodingService.h; sourceTree = "<group>"; };
 		E8985B361A1C8BD7004845DF /* GCGeocodingService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCGeocodingService.m; sourceTree = "<group>"; };
 		E8B3CC051A1D951800C69275 /* user_32x32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_32x32.png; sourceTree = "<group>"; };
@@ -241,6 +249,8 @@
 		E8985AFF1A1C851C004845DF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E8985B311A1C8AF9004845DF /* AddItemViewController.h */,
+				E8985B321A1C8AF9004845DF /* AddItemViewController.m */,
 				E8985B031A1C851C004845DF /* AppDelegate.h */,
 				E8985B041A1C851C004845DF /* AppDelegate.m */,
 				E8985B061A1C851C004845DF /* ViewController.h */,
@@ -287,6 +297,9 @@
 				E8D532511A30A5910024A1B6 /* userMarkerView.h */,
 				E8D532521A30A5910024A1B6 /* userMarkerView.m */,
 				E8D5324C1A309D840024A1B6 /* UserMarkerView.xib */,
+				E834A1581A35A37900A2F191 /* AddItemView.h */,
+				E834A1591A35A37900A2F191 /* AddItemView.m */,
+				E834A1561A359F5D00A2F191 /* AddItemView.xib */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -300,8 +313,8 @@
 				E8985B2C1A1C8AD4004845DF /* SearchViewController.m */,
 				E8985B2E1A1C8AE3004845DF /* ProfileViewController.h */,
 				E8985B2F1A1C8AE3004845DF /* ProfileViewController.m */,
-				E8985B311A1C8AF9004845DF /* AddItemViewController.h */,
-				E8985B321A1C8AF9004845DF /* AddItemViewController.m */,
+				E854F8A11A37F60300A466D5 /* AddItemTableViewController.h */,
+				E854F8A21A37F60300A466D5 /* AddItemTableViewController.m */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -458,6 +471,7 @@
 				E8FA5A9D1A24CAB2007B41F0 /* launch_image.png in Resources */,
 				E8B3CC0A1A1D951800C69275 /* plus_32x32.png in Resources */,
 				E870BA271A2224E100D81294 /* FBLoginButton@2x.png in Resources */,
+				E834A1571A359F5D00A2F191 /* AddItemView.xib in Resources */,
 				E870BA251A21F73500D81294 /* WilBeck.jpg in Resources */,
 				E8985B0D1A1C851C004845DF /* Images.xcassets in Resources */,
 			);
@@ -511,8 +525,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				E88225311A284D180091B48A /* AFURLConnectionOperation.m in Sources */,
+				E854F8A31A37F60300A466D5 /* AddItemTableViewController.m in Sources */,
 				E882252D1A284D180091B48A /* AFImageRequestOperation.m in Sources */,
 				E8B3CC1B1A1DE0E400C69275 /* infoWindowView.m in Sources */,
+				E834A15A1A35A37900A2F191 /* AddItemView.m in Sources */,
 				E8985B2A1A1C8AC7004845DF /* LoginViewController.m in Sources */,
 				E8985B371A1C8BD7004845DF /* GCGeocodingService.m in Sources */,
 				E882252E1A284D180091B48A /* AFJSONRequestOperation.m in Sources */,

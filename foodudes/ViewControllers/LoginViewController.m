@@ -37,7 +37,7 @@
     logoImageView.center = CGPointMake(self.view.center.x, self.view.center.y*0.6);
     
     
-       UIButton *loginButton =[[UIButton alloc]init];
+    UIButton *loginButton =[[UIButton alloc]init];
     loginButton.frame= CGRectMake(0, 0, 240, 45.75);
     loginButton.center = CGPointMake(self.view.center.x
                                      , self.view.center.y*1.3);

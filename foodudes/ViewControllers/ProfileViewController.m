@@ -16,6 +16,8 @@
 
 @interface ProfileViewController ()<UITableViewDataSource, UITableViewDelegate>
 
+@property UIImageView * headImageView;
+
 @property (weak, nonatomic) IBOutlet UITableView *friendsTableView;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 @property (nonatomic, strong) NSMutableArray *dataArray;
@@ -40,6 +42,9 @@
 
     NSString *userProfilePhotoURLString = [PFUser currentUser][@"profile"][@"pictureURL"];
     // Download the user's facebook profile picture
+    
+    self.headImageView =  [[UIImageView alloc]initWithFrame:CGRectMake(10, 72, 100, 100)];
+    
     NSLog(@"URL: %@", userProfilePhotoURLString);
     
     if (userProfilePhotoURLString) {
@@ -50,10 +55,7 @@
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
                                    if (connectionError == nil && data != nil) {
                                        self.headImageView.image = [UIImage imageWithData:data];
-                                       // Add a nice corner radius to the image
-//                                       self.headImageView.layer.cornerRadius = 50.0f;
-//                                       self.headImageView.layer.masksToBounds = YES;
-                                       
+                                      
                                    } else {
                                        NSLog(@"Failed to load profile photo.");
                                    }
@@ -63,7 +65,8 @@
     UIImageView *background = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"background"]];
     
     UIVisualEffect *blurEffect;
-    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]
+    ;
     UIVisualEffectView *visualEffectView;
     visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
     visualEffectView.frame = background.bounds;
@@ -77,33 +80,26 @@
     
     UIView *view2 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 600, 60)];
     view2.backgroundColor = [UIColor colorWithRed:246/255.0f green:246/255.0f blue:248/255.0f alpha:1];
-    //view2.backgroundColor = [UIColor whiteColor];
     
     [self.view insertSubview:background atIndex:1];
-    //[self.view insertSubview:view1 atIndex:1];
-    //[self.view addSubview:view2];
+
     [view1 addSubview:view2];
+    [view2 addSubview:self.headImageView];
+    
     UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 30)];
     title.text = @"Profile";
     title.center = CGPointMake(self.view.center.x, 40);
     title.textColor = [UIColor blackColor];
     title.font = [UIFont systemFontOfSize:17];
     
+    UIButton * logoutButton = [[UIButton alloc] initWithFrame:CGRectMake(160, 155, 70, 30)];
+    [logoutButton setTitle:@"Logout" forState:UIControlStateNormal];
+    [logoutButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     
-   UILabel *numOfFriends = [[UILabel alloc]initWithFrame:CGRectMake(10, 175, 100, 20)];
-    numOfFriends.text = [NSString stringWithFormat:@"%i位朋友",5];
-    numOfFriends.textColor = [UIColor lightGrayColor];
-    numOfFriends.font = [UIFont systemFontOfSize:14];
+    [logoutButton addTarget:self action:@selector(logoutButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-   
-    UILabel *numOfRestaurant = [[UILabel alloc]initWithFrame:CGRectMake(160, 100, 200, 35)];
-    numOfRestaurant.text = [NSString stringWithFormat:@"已推薦%i間餐廳", 10];
-    numOfRestaurant.textColor = [UIColor grayColor];
-    numOfRestaurant.font = [UIFont systemFontOfSize:15];
-
-   [self.view addSubview: numOfFriends];
-   [self.view addSubview:numOfRestaurant];
-   [self.view addSubview:title];
+    [self.view addSubview:title];
+    [self.view addSubview:logoutButton];
     
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(loadObjects) forControlEvents:UIControlEventValueChanged];
@@ -128,14 +124,43 @@
     NSData *data = [NSData dataWithContentsOfFile:filePath];
     NSDictionary *rest = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
     
+    NSArray *userArray = rest[@"users"];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *defaultuser =[NSString stringWithFormat:@"%@", [defaults objectForKey:@"userID"]] ;
+    
+    for (int i = 0; i < userArray.count ; i++){
+       
+    NSString *uID =[NSString stringWithFormat:@"%@",[userArray[i] objectForKey:@"id"]];
+        
+        if ([uID isEqualToString:defaultuser]) {
+            //self.dataArray = rest[@"users"];
+            //[self.dataArray removeObject: userArray[i]];
+            NSString *recommend_count = [NSString stringWithFormat:@"%@", [userArray[i] objectForKey:@"recommend_count"]];
+            
+            UILabel *numOfRestaurant = [[UILabel alloc]initWithFrame:CGRectMake(160, 100, 200, 35)];
+            numOfRestaurant.text = [NSString stringWithFormat:@"已推薦%@間餐廳", recommend_count];
+            numOfRestaurant.textColor = [UIColor grayColor];
+            numOfRestaurant.font = [UIFont systemFontOfSize:15];
+            [self.view addSubview:numOfRestaurant];
+        }
+        
+    }
+
     self.dataArray = rest[@"users"];
     
-    NSLog(@"dataArray: %@",self.dataArray);
+    NSLog(@"dataArray: %lu", self.dataArray.count);
+    
+    
+    UILabel *numOfFriends = [[UILabel alloc]initWithFrame:CGRectMake(10, 175, 100, 20)];
+    numOfFriends.text = [NSString stringWithFormat:@"%i位朋友",self.dataArray.count];
+    numOfFriends.textColor = [UIColor lightGrayColor];
+    numOfFriends.font = [UIFont systemFontOfSize:14];
+    
+    
+    [self.view addSubview: numOfFriends];
     
     [self.friendsTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
     //NSLog(@"userDict: %@", userDict);
-
-
 
 }
 
@@ -148,8 +173,10 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    
     NSLog(@"number of rows: %lu", self.dataArray.count);
     return self.dataArray.count;
+    
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -168,8 +195,6 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.backgroundColor =[UIColor clearColor];
-//        cell.backgroundView = [[UIView new] autorelease];
-//        cell.selectedBackgroundView = [[UIView new] autorelease];
         
         } else {
         NSLog(@"I have been initialize. Row = %li", (long)indexPath.row);
@@ -211,6 +236,16 @@
     return cell;
 }
 
+//將運算從rowforIndexPath中移出來
+
+-(void) loadingFriendsData
+{
+    
+}
+
+
+
+
 #pragma mark loadData from Parse
 //- (void)loadObjects {
 //    
@@ -230,10 +265,34 @@
 - (IBAction)logoutButtonPressed:(id)sender {
     
     [PFUser logOut];
+
+    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://beta.foodudes.co/"]];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *mobileID =[NSString stringWithFormat:@"%@", [defaults objectForKey:@"mobile_ID"]] ;
     
-    // Return to login view controller
-    //[self.navigationController popToRootViewControllerAnimated:YES];
     
+    
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                            mobileID,         @"mobile_id",
+                            nil];
+    NSMutableURLRequest *request = [httpClient requestWithMethod:@"DELETE"
+                                                            path:@"api/v1/auth/sign_out"
+                                                      parameters:params];
+    
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    [httpClient registerHTTPOperationClass:[AFHTTPRequestOperation class]];
+    
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSLog(@"Completed!");
+        
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error to logout.");
+    }];
+    
+    [operation start];
+
     LoginViewController * rootVC =[self.storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
     [self presentViewController:rootVC animated:YES completion:nil];
     
