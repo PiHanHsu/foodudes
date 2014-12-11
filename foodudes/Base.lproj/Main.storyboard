@@ -71,7 +71,7 @@
             </objects>
             <point key="canvasLocation" x="2763" y="805"/>
         </scene>
-        <!--Profile View Controller-->
+        <!--Profile-->
         <scene sceneID="Y09-AZ-SOb">
             <objects>
                 <viewController id="vyJ-iQ-cbo" customClass="ProfileViewController" sceneMemberID="viewController">
@@ -105,7 +105,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" systemItem="contacts" id="rXy-Zs-YT7"/>
+                    <tabBarItem key="tabBarItem" title="Profile" image="Profile.png" id="rXy-Zs-YT7"/>
                     <connections>
                         <outlet property="displayNameLabel" destination="jyU-e2-fa5" id="59x-D0-laM"/>
                         <outlet property="friendsTableView" destination="7tq-Jh-40X" id="Kyh-Zd-kJE"/>
@@ -194,11 +194,11 @@
             </objects>
             <point key="canvasLocation" x="546" y="121"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Add-->
         <scene sceneID="yRq-kP-PyT">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="suO-BH-KTC" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" systemItem="topRated" id="KeC-IQ-3VR"/>
+                    <tabBarItem key="tabBarItem" title="Add" image="add.png" id="KeC-IQ-3VR"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="bgi-Ck-cEg">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -214,4 +214,8 @@
             <point key="canvasLocation" x="2678" y="134"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Profile.png" width="24" height="24"/>
+        <image name="add.png" width="24" height="24"/>
+    </resources>
 </document>
