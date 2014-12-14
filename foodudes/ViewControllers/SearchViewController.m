@@ -24,8 +24,6 @@
     
 }
 
-
-
 @property UISearchBar *searchBar;
 @property UIView *infoView;
 @property UIImage * userCustomMarker;
@@ -46,6 +44,8 @@
 @property NSString * restaurantName;
 @property NSString * restaurantAddress;
 @property NSString * restaurantTel;
+@property NSString * restaurantLat;
+@property NSString * restaurantLng;
 @property NSString * content;
 @property NSString * recommendName;
 
@@ -65,13 +65,15 @@
     [super viewDidLoad];
     [self initializeProgressHUD:@"Loading..."];
     
-    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:25.023868 longitude:121.528976 zoom:15 bearing:0 viewingAngle:50];
+    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:25.023868 longitude:121.528976 zoom:15 bearing:0 viewingAngle:0];
     
     mapView = [GMSMapView mapWithFrame:CGRectZero camera:camera];
     
-    mapView.frame = CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height);
+    mapView.frame = CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height-49);
     mapView.myLocationEnabled = YES;
+    //mapView.settings.myLocationButton = YES;
     mapView.delegate = self;
+    
     self.searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 30)];
     self.searchBar.showsSearchResultsButton=YES;
     self.searchBar.searchBarStyle = UIBarStyleDefault;
@@ -82,17 +84,31 @@
     [self.view insertSubview:mapView atIndex:0];
     gs = [[GCGeocodingService alloc] init];
     
-    self.contentScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 65, 270, 170)];
-    //self.contentScrollView.backgroundColor = [UIColor greenColor];
+    
     
     
     //[self lodaDataFromParse];
     //[self loadData];
     //[self loadDateForInfoView];
- 
+    
+    
+    
     [self loadRestData];
     
+//    self.locationManager = [[CLLocationManager alloc] init];
+//    self.locationManager.delegate = self;
+//    // Check for iOS 8. Without this guard the code will crash with "unknown selector" on iOS 7.
+//    if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+//        [self.locationManager requestWhenInUseAuthorization];
+//    }
+//    [self.locationManager startUpdatingLocation];
+    
 }
+
+//- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+//{
+//    NSLog(@"%@", [locations lastObject]);
+//}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -299,8 +315,9 @@
 - (BOOL)mapView:(GMSMapView *)mapView1 didTapMarker:(GMSMarker *)marker
 {
     [self.infoView removeFromSuperview];
+    [self.contentScrollView removeFromSuperview];
     CGPoint point = [mapView1.projection pointForCoordinate:marker.position];
-    point.y = point.y - 130;
+    point.y = point.y - 157;
     GMSCameraUpdate *camera =
     [GMSCameraUpdate setTarget:[mapView1.projection coordinateForPoint:point]];
     [mapView1 animateWithCameraUpdate:camera];
@@ -316,6 +333,10 @@
             self.restaurantName = restaurantDict[@"name"];
             self.restaurantAddress =restaurantDict[@"address"];
             self.restaurantTel = restaurantDict[@"phone_number"];
+            self.restaurantLat= [NSString stringWithFormat:@"%@", restaurantDict[@"marker_lat"]];
+            
+            self.restaurantLng= [NSString stringWithFormat:@"%@", restaurantDict[@"marker_lng"]];
+;
             self.recommendUserArray =restaurantDict[@"user"];
             //NSLog(@"recommender num: %lu", self.recommendUserArray.count );
             [self loadingRecommendContent];
@@ -330,22 +351,26 @@
 -(void)loadingRecommendContent
 {
     [self.infoView removeFromSuperview];
-    [self.contentScrollView removeFromSuperview];
+    self.contentScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 65, 270, 200)];
+    self.contentScrollView.backgroundColor = [UIColor colorWithRed:233/255.0 green:234/255.0 blue:237/255.0 alpha:1];
     
     int user_count = [[NSString stringWithFormat:@"%lu", self.recommendUserArray.count] intValue];
         
         for (int i = 0; i < user_count; i++) {
             NSDictionary * recommendUserDict = self.recommendUserArray[i];
             
-            NSInteger y = 5 + (180 * i);
-            UIView *contentView = [[UIView alloc]initWithFrame:CGRectMake(5, y, 260, 170)];
-            contentView.backgroundColor = [UIColor lightGrayColor];
-            contentView.layer.cornerRadius =10.0f;
+            NSInteger y = 5 + (160 * i);
+            UIView *contentView = [[UIView alloc]initWithFrame:CGRectMake(8, y, 254, 155)];
+            contentView.backgroundColor = [UIColor whiteColor];
+            contentView.layer.cornerRadius =5.0f;
             contentView.layer.masksToBounds =YES;
+            contentView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+            contentView.layer.borderWidth = 1.0f;
             
             UITextView * contentTextView = [[UITextView alloc]initWithFrame:CGRectMake(5, 55, 250, 100)];
             contentTextView.backgroundColor = [UIColor whiteColor];
             contentTextView.textColor = [UIColor blackColor];
+            contentView.layer.cornerRadius =1.0f;
             NSString * content = [recommendUserDict[@"content"] stringByReplacingOccurrencesOfString:@" \n" withString:@"\n"];
             
             contentTextView.text =content;
@@ -385,7 +410,7 @@
                                        }
                                    }];
             if (i == (user_count -1)) {
-                NSInteger h = 190 + (190 * (self.recommendUserArray.count-1));
+                NSInteger h = 170 + (170 * (self.recommendUserArray.count-1));
                 
                 self.contentScrollView.contentSize = CGSizeMake(260, h);
                 [self displayInfoWindowData];
@@ -425,7 +450,7 @@ didChangeCameraPosition:(GMSCameraPosition *)position{
     infoView.address.text=self.restaurantAddress;
     infoView.tel.text=self.restaurantTel;
     [infoView addSubview:self.contentScrollView];
-    UIButton * shareButton = [[UIButton alloc]initWithFrame:CGRectMake(120, 245, 150, 20)];
+    UIButton * shareButton = [[UIButton alloc]initWithFrame:CGRectMake(125, 265, 150, 20)];
     
     [shareButton setTitle:@"加入我的推薦清單" forState:UIControlStateNormal];
     [shareButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
@@ -479,10 +504,11 @@ didChangeCameraPosition:(GMSCameraPosition *)position{
     [self.tabBarController setSelectedIndex:0];
     UINavigationController *navController = [[self.tabBarController viewControllers] objectAtIndex:0];
     AddItemTableViewController *addItemVC = [[navController viewControllers] objectAtIndex:0];
-      addItemVC.nameTextField.text = @"test";
-//    addItemVC.addressTextField.text = self.restaurantAddress;
-//    addItemVC.telTextField.text = self.restaurantTel;
-    
+      addItemVC.nameText = self.restaurantName;
+      addItemVC.addressText = self.restaurantAddress;
+      addItemVC.telText = self.restaurantTel;
+      addItemVC.placeLat = self.restaurantLat;
+      addItemVC.placeLng = self.restaurantLng;
 
 }
 

@@ -15,8 +15,14 @@
 @property (strong, nonatomic) UITextField *nameTextField;
 @property (strong, nonatomic) UITextField *addressTextField;
 @property (strong, nonatomic) UITextField *telTextField;
+@property (strong, nonatomic) NSString *nameText;
+@property (strong, nonatomic) NSString *addressText;
+@property (strong, nonatomic) NSString *telText;
 
 @property (strong, nonatomic) UITextView *contentTextView;
 @property (strong,nonatomic) GCGeocodingService *gs;
+
+@property NSString * placeLat;
+@property NSString * placeLng;
 
 @end

@@ -54,7 +54,7 @@
      usingBlock:^(NSNotification *notification) {
          if ([notification.name isEqualToString:@"loadingDataFinished"]) {
              NSLog(@"Loading Data Finished!");
-             [self _ViewControllerAnimated:YES]; 
+             [self _ViewControllerAnimated:YES];
          }
      }];
     

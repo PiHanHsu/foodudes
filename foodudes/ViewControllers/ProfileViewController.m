@@ -30,13 +30,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-//  Show data from Parse
+   //  Show data from Parse
     
     NSString *name = [PFUser currentUser][@"profile"][@"name"];
     if (name) {
         self.displayNameLabel.text = name;
         self.displayNameLabel.textColor = [UIColor whiteColor];
+        self.displayNameLabel.font = [UIFont systemFontOfSize:30];
         
     }
 
@@ -92,10 +92,8 @@
     title.textColor = [UIColor blackColor];
     title.font = [UIFont systemFontOfSize:17];
     
-    UIButton * logoutButton = [[UIButton alloc] initWithFrame:CGRectMake(160, 155, 70, 30)];
-    [logoutButton setTitle:@"Logout" forState:UIControlStateNormal];
-    [logoutButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-    
+    UIButton * logoutButton = [[UIButton alloc] initWithFrame:CGRectMake(140, 145, 100, 45)];
+    [logoutButton setImage:[UIImage imageNamed:@"LogoutButton"] forState:UIControlStateNormal];
     [logoutButton addTarget:self action:@selector(logoutButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
     [self.view addSubview:title];
@@ -127,34 +125,22 @@
     NSArray *userArray = rest[@"users"];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *defaultuser =[NSString stringWithFormat:@"%@", [defaults objectForKey:@"userID"]] ;
+    NSString *userRecommendCount =[NSString stringWithFormat:@"%@", [defaults objectForKey:@"recommend_count"]];
+    UILabel *numOfRestaurant = [[UILabel alloc]initWithFrame:CGRectMake(140, 110, 200, 35)];
+                numOfRestaurant.text = [NSString stringWithFormat:@"已推薦%@間餐廳", userRecommendCount];
+                numOfRestaurant.textColor = [UIColor grayColor];
+                numOfRestaurant.font = [UIFont systemFontOfSize:13];
+                [self.view addSubview:numOfRestaurant];
     
-    for (int i = 0; i < userArray.count ; i++){
-       
-    NSString *uID =[NSString stringWithFormat:@"%@",[userArray[i] objectForKey:@"id"]];
-        
-        if ([uID isEqualToString:defaultuser]) {
-            //self.dataArray = rest[@"users"];
-            //[self.dataArray removeObject: userArray[i]];
-            NSString *recommend_count = [NSString stringWithFormat:@"%@", [userArray[i] objectForKey:@"recommend_count"]];
-            
-            UILabel *numOfRestaurant = [[UILabel alloc]initWithFrame:CGRectMake(160, 100, 200, 35)];
-            numOfRestaurant.text = [NSString stringWithFormat:@"已推薦%@間餐廳", recommend_count];
-            numOfRestaurant.textColor = [UIColor grayColor];
-            numOfRestaurant.font = [UIFont systemFontOfSize:15];
-            [self.view addSubview:numOfRestaurant];
-        }
-        
-    }
-
     self.dataArray = rest[@"users"];
     
     NSLog(@"dataArray: %lu", self.dataArray.count);
     
     
     UILabel *numOfFriends = [[UILabel alloc]initWithFrame:CGRectMake(10, 175, 100, 20)];
-    numOfFriends.text = [NSString stringWithFormat:@"%i位朋友",self.dataArray.count];
+    numOfFriends.text = [NSString stringWithFormat:@"%.lu位朋友",self.dataArray.count];
     numOfFriends.textColor = [UIColor lightGrayColor];
-    numOfFriends.font = [UIFont systemFontOfSize:14];
+    numOfFriends.font = [UIFont systemFontOfSize:13];
     
     
     [self.view addSubview: numOfFriends];
@@ -195,9 +181,13 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.backgroundColor =[UIColor clearColor];
+        cell.textLabel.textColor = [UIColor whiteColor];
+        cell.textLabel.font =[UIFont systemFontOfSize:17];
+        cell.detailTextLabel.textColor = [UIColor lightGrayColor];
+        cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
         
         } else {
-        NSLog(@"I have been initialize. Row = %li", (long)indexPath.row);
+        //NSLog(@"I have been initialize. Row = %li", (long)indexPath.row);
     }
     
     

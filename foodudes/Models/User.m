@@ -33,7 +33,7 @@
         
 #pragma mark - progressed 完成
         //載入完成
-        NSLog(@"Completed!");
+        NSLog(@"get user data Completed!");
         NSString *tmp = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         //轉資料
         NSData *rawData = [tmp dataUsingEncoding:NSUTF8StringEncoding];
@@ -51,15 +51,24 @@
         NSString *filePath = [documentDirectiory stringByAppendingPathComponent:uploadFile];
         
         [jsondata writeToFile:filePath atomically:YES];
+       
+        NSDictionary *userDict = [dict objectForKey:@"user"];
+
+        NSString *fooduduesID = [NSString stringWithFormat:@"%@", [userDict objectForKey:@"id"]];
+        self.mobileID = [NSString stringWithFormat:@"%@", [userDict objectForKey:@"mobile_id"]];
         
-        NSString *fooduduesID = [NSString stringWithFormat:@"%@", [dict objectForKey:@"id"]];
-        self.mobileID = [NSString stringWithFormat:@"%@", [dict objectForKey:@"mobile_id"]];
+        NSString *userRecommendCount = [NSString stringWithFormat:@"%@",[dict objectForKey:@"recommend_count"]];
         
+        NSLog(@"recommend_count: %@",[dict objectForKey:@"recommend_count"] );
         
+        NSLog(@"userID: %@",fooduduesID);
+        NSLog(@"mobileID: %@", self.mobileID);
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         
         [defaults setObject:fooduduesID forKey:@"userID"];
         [defaults setObject:self.mobileID  forKey:@"mobile_ID"];
+        [defaults setObject:userRecommendCount  forKey:@"recommend_count"];
+
         
         [defaults synchronize];
 
@@ -76,7 +85,7 @@
 -(void)getRestData
 {
         AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://106.185.53.8/"]];
-    
+
         NSString * mobileID = self.mobileID;
     NSLog(@"mobileID: %@", mobileID);
     
@@ -92,7 +101,7 @@
     
         [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
     
-            NSLog(@"Completed!");
+            NSLog(@"get rest data Completed!");
             NSString *tmp = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
     
             NSData *rawData = [tmp dataUsingEncoding:NSUTF8StringEncoding];
@@ -121,6 +130,7 @@
         
         [operation start];
 }
+
 
 -(void) saveUserDataToParse
 {

@@ -9,12 +9,16 @@
 #import "AddItemTableViewController.h"
 #import "AFNetworking.h"
 #import "GCGeocodingService.h"
+#import "User.h"
+#import "MBProgressHUD.h"
 
-@interface AddItemTableViewController ()<UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate, UITextViewDelegate>
+@interface AddItemTableViewController ()<UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate, UITextViewDelegate,MBProgressHUDDelegate>
+{
+    MBProgressHUD  *progressHUD;
+    
+}
 
 
-@property NSNumber * placeLat;
-@property NSNumber * placeLng;
 
 @end
 
@@ -24,39 +28,51 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     //self.navigationController.title = @"新增推薦地點";
-    
+    gs = [[GCGeocodingService alloc] init];
     
     self.nameTextField =[[UITextField alloc]initWithFrame:CGRectMake(130, 0, 180, 40)];
-    self.nameTextField.textColor =[UIColor lightGrayColor];
+    self.nameTextField.textColor =[UIColor blackColor];
     self.nameTextField.delegate =self;
     self.nameTextField.textAlignment = NSTextAlignmentLeft;
     self.nameTextField.font =[UIFont systemFontOfSize:13];
     self.nameTextField.tag=101;
-
+    self.nameTextField.text = self.nameText;
+    self.nameTextField.placeholder=@"輸入餐廳名稱";
+    if (self.nameTextField.text) {
+        self.nameTextField.enabled =NO;
+        self.nameTextField.textColor = [UIColor grayColor];
+    }
+    
+    
     self.addressTextField =[[UITextField alloc]initWithFrame:CGRectMake(130, 0, 180, 40)];
-    self.addressTextField.textColor =[UIColor lightGrayColor];
+    self.addressTextField.textColor =[UIColor blackColor];
     self.addressTextField.delegate =self;
     self.addressTextField.textAlignment = NSTextAlignmentLeft;
     self.addressTextField.font =[UIFont systemFontOfSize:13];
     self.addressTextField.tag=102;
-
+    self.addressTextField.text =self.addressText;
+    self.addressTextField.placeholder=@"輸入地址";
+    
+    
     self.telTextField =[[UITextField alloc]initWithFrame:CGRectMake(130, 0, 180, 40)];
     self.telTextField.textColor =[UIColor blackColor];
     self.telTextField.delegate =self;
     self.telTextField.textAlignment = NSTextAlignmentLeft;
     self.telTextField.font =[UIFont systemFontOfSize:13];
     self.telTextField.tag=103;
-    
+    self.telTextField.text = self.telText;
+    self.telTextField.placeholder = @"輸入電話";
     
     self.contentTextView  =[[UITextView alloc]initWithFrame:CGRectMake(10, 10, self.view.frame.size.width -20, 150 )];
     self.contentTextView.textColor =[UIColor blackColor];
     self.contentTextView.delegate =self;
     self.contentTextView.editable =YES;
-    self.contentTextView.backgroundColor = [UIColor lightGrayColor];
+    self.contentTextView.backgroundColor = [UIColor whiteColor];
     self.contentTextView.textAlignment = NSTextAlignmentLeft;
     self.contentTextView.font =[UIFont systemFontOfSize:13];
     self.contentTextView.tag=104;
-
+    
+    
     UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hideKeyboard)];
     [gestureRecognizer setDelegate:self];
     [self.view addGestureRecognizer:gestureRecognizer];
@@ -130,11 +146,15 @@
     headerLabel.font = [UIFont systemFontOfSize:12.0f];
     
     if (section ==0)
-        headerLabel.text = @"    餐廳資訊）";
+    {
+        headerLabel.text = @"    餐廳資訊";
+        headerLabel.font = [UIFont systemFontOfSize:15];
+    }
     else if (section ==1)
+    {
         headerLabel.text =  @"    推薦原因";
-   
-    
+        headerLabel.font = [UIFont systemFontOfSize:15];
+    }
     return headerLabel;
     
 }
@@ -144,11 +164,11 @@
 {
     if(section ==1){
         UIView *footerView =[[UIView alloc]initWithFrame:CGRectMake(0, 0,self.view.frame.size.width, 120)];
-        UIButton *addcharity = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIButton *addcharity = [[UIButton alloc]initWithFrame:CGRectMake(14, 20, self.view.frame.size.width-28, 40)];
         [addcharity setTitle:@"新增" forState:UIControlStateNormal];
         [addcharity addTarget:self action:@selector(checkLatnLng:) forControlEvents:UIControlEventTouchUpInside];
         [addcharity setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        addcharity.frame = CGRectMake(14, 20, 292, 40);
+        //addcharity.frame = CGRectMake(14, 20, 292, 40);
         addcharity.backgroundColor = [UIColor greenColor];
         
         [addcharity.layer setCornerRadius:5.0f];
@@ -236,14 +256,17 @@
 #pragma mark AddNewPlaces
 - (void) checkLatnLng: (id)sender
 {
+    [self initializeProgressHUD:@"儲存中..."];
     if (!self.placeLat || !self.placeLng ) {
-        NSLog(@"address: %@", self.addressTextField.text);
         
+        //NSString * tmp = self.addressTextField.text;
         [gs geocodeAddress:self.addressTextField.text];
-        
-        
         [self getLatAndLng];
+    }else{
+        NSLog(@"lat: %@, Lng:%@", self.placeLat, self.placeLng);
+         [self addNewPlaces];
     }
+   
 }
 
 - (void) getLatAndLng
@@ -251,7 +274,7 @@
     self.placeLat = [gs.geocode objectForKey:@"lat"] ;
     self.placeLng = [gs.geocode objectForKey:@"lng"] ;
     NSLog(@"new place: %@, %@", self.placeLat, self.placeLng);
-
+    [self addNewPlaces];
 
 }
 
@@ -264,11 +287,10 @@
     NSString * name=self.nameTextField.text;
     NSString * address= self.addressTextField.text;
     NSString * phone_number = self.telTextField.text;
-
+    NSString * lat =[NSString stringWithFormat:@"%@", self.placeLat];
+    NSString * lng =[NSString stringWithFormat:@"%@", self.placeLng];
     NSString * content= self.contentTextView.text;
     NSLog(@"content: %@", content);
-    
-    
 
     
     NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -276,8 +298,8 @@
                             name,             @"name",
                             address,          @"address",
                             phone_number,     @"phone_number",
-                            self.placeLat, @"lat",
-                            self.placeLng, @"lng",
+                            lat,              @"lat",
+                            lng,              @"lng",
                             content,          @"content",
                             nil];
     NSMutableURLRequest *request = [httpClient requestWithMethod:@"POST"
@@ -288,8 +310,46 @@
     [httpClient registerHTTPOperationClass:[AFHTTPRequestOperation class]];
     
     [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
         NSLog(@"Completed!");
+        User *currentUser = [[User alloc]init];
+        [currentUser getUserData];
+
+        [[NSNotificationCenter defaultCenter]
+         addObserverForName:@"loadingDataFinished"
+         object:nil
+         queue:[NSOperationQueue mainQueue]
+         usingBlock:^(NSNotification *notification) {
+             if ([notification.name isEqualToString:@"loadingDataFinished"]) {
+                 NSLog(@"Loading Data Finished!");
+                 [progressHUD hide:YES];
+                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"新增成功"
+                                                                 message:nil
+                                                                delegate:nil
+                                                       cancelButtonTitle:@"OK"
+                                                       otherButtonTitles:nil];
+                 [alert show];
+                 [self _ViewControllerAnimated:YES];
+
+             }
+         }];
+
+        
+        
+        
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"新增成功"
+//                                                        message:nil
+//                                                       delegate:nil
+//                                              cancelButtonTitle:@"OK"
+//                                              otherButtonTitles:nil];
+//        [alert show];
+        
+        self.nameTextField.text=@"";
+        self.addressTextField.text=@"";
+        self.telTextField.text=@"";
+        self.placeLat=@"";
+        self.placeLng=@"";
+        self.contentTextView.text=@"";
+
         
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -298,12 +358,35 @@
     
     [operation start];
 
-    
-    
-    
 }
-//
-//
+- (void)_ViewControllerAnimated:(BOOL)animated {
+    
+    UITabBarController *tabBarVC = [self.storyboard instantiateViewControllerWithIdentifier:@"TabBarController"];
+    [tabBarVC setSelectedIndex:1];
+    [self presentViewController:tabBarVC animated:YES completion:nil];
+    //    [self.navigationController pushViewController:tabBarVC animated:animated];
+}
+
+
+- (void)initializeProgressHUD:(NSString *)msg
+{
+    if (progressHUD)
+        [progressHUD removeFromSuperview];
+    
+    progressHUD = [[MBProgressHUD alloc] initWithView:self.view];
+    [self.view addSubview:progressHUD];
+    progressHUD.dimBackground = NO;
+    progressHUD.delegate = self;
+    progressHUD.labelText = msg;
+    
+    progressHUD.margin = 20.f;
+    progressHUD.yOffset = 10.f;
+    
+    progressHUD.removeFromSuperViewOnHide = YES;
+    [progressHUD show:YES];
+}
+
+
 //- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 //#warning Potentially incomplete method implementation.
 //    // Return the number of sections.

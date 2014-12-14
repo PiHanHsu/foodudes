@@ -10,8 +10,9 @@
 #import <GoogleMaps/GoogleMaps.h>
 #import "GCGeocodingService.h"
 
-@interface SearchViewController : UIViewController < UISearchBarDelegate, GMSMapViewDelegate >
+@interface SearchViewController : UIViewController < UISearchBarDelegate, GMSMapViewDelegate, CLLocationManagerDelegate >
 @property (strong,nonatomic) GCGeocodingService *gs;
+@property (strong, nonatomic) CLLocationManager *locationManager;
 
 
 @end
