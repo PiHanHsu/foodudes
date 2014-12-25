@@ -38,10 +38,15 @@
     self.nameTextField.tag=101;
     self.nameTextField.text = self.nameText;
     self.nameTextField.placeholder=@"輸入餐廳名稱";
-    if (self.nameTextField.text) {
+    if (self.nameTextField.text.length >1) {
         self.nameTextField.enabled =NO;
         self.nameTextField.textColor = [UIColor grayColor];
+    }else{
+        self.nameTextField.enabled =YES;
+        self.nameTextField.textColor = [UIColor blackColor];
     }
+    
+   
     
     
     self.addressTextField =[[UITextField alloc]initWithFrame:CGRectMake(130, 0, 180, 40)];
@@ -164,20 +169,40 @@
 {
     if(section ==1){
         UIView *footerView =[[UIView alloc]initWithFrame:CGRectMake(0, 0,self.view.frame.size.width, 120)];
-        UIButton *addcharity = [[UIButton alloc]initWithFrame:CGRectMake(14, 20, self.view.frame.size.width-28, 40)];
+        UIButton *addcharity = [[UIButton alloc]initWithFrame:CGRectMake(14, 20, (self.view.frame.size.width/2)- 20, 40)];
         [addcharity setTitle:@"新增" forState:UIControlStateNormal];
         [addcharity addTarget:self action:@selector(checkLatnLng:) forControlEvents:UIControlEventTouchUpInside];
         [addcharity setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        //addcharity.frame = CGRectMake(14, 20, 292, 40);
-        addcharity.backgroundColor = [UIColor greenColor];
+                addcharity.backgroundColor = [UIColor greenColor];
+        
+        UIButton *cancelButton = [[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width/2)+6, 20, (self.view.frame.size.width/2)- 20, 40)];
+        [cancelButton setTitle:@"取消" forState:UIControlStateNormal];
+        [cancelButton addTarget:self action:@selector(cencelButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [cancelButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        
+        cancelButton.backgroundColor = [UIColor greenColor];
+        
         
         [addcharity.layer setCornerRadius:5.0f];
+        [cancelButton.layer setCornerRadius:5.0f];
         [footerView addSubview:addcharity];
+        [footerView addSubview:cancelButton];
 
         return footerView;
     }else
         return nil;
     
+}
+
+- (void) cencelButtonPressed: (id) sender{
+    
+    self.nameTextField.text=@"";
+    self.addressTextField.text=@"";
+    self.telTextField.text=@"";
+    self.placeLat=@"";
+    self.placeLng=@"";
+    self.contentTextView.text=@"";
+
 }
 
 -(CGFloat) tableView:(UITableView *)tableView estimatedHeightForFooterInSection:(NSInteger)section
@@ -210,17 +235,17 @@
         case 0: {
             switch (indexPath.row) {
                 case 0:
-                    cell.imageView.image = [UIImage imageNamed:@"img_info_account"];
+                    //cell.imageView.image = [UIImage imageNamed:@"img_info_account"];
                     cell.textLabel.text = @"餐廳名稱";
                     [cell.contentView addSubview:self.nameTextField];
                     break;
                 case 1:
-                    cell.imageView.image = [UIImage imageNamed:@"img_info_password"];
+                    //cell.imageView.image = [UIImage imageNamed:@"img_info_password"];
                     cell.textLabel.text = @"地址";
                     [cell.contentView addSubview:self.addressTextField];
                     break;
                 case 2:
-                    cell.imageView.image = [UIImage imageNamed:@"img_info_password"];
+                    //cell.imageView.image = [UIImage imageNamed:@"img_info_password"];
                     cell.textLabel.text = @"電話";
                     [cell.contentView addSubview:self.telTextField];
                     break;
@@ -234,7 +259,7 @@
         case 1: {
             switch (indexPath.row) {
                 case 0:
-                    cell.imageView.image = [UIImage imageNamed:@"img_info_name"];
+                    //cell.imageView.image = [UIImage imageNamed:@"img_info_name"];
                     cell.textLabel.text = @"推薦原因";
                     [cell.contentView addSubview:self.contentTextView];
                     break;

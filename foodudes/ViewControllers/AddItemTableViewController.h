@@ -18,6 +18,9 @@
 @property (strong, nonatomic) NSString *nameText;
 @property (strong, nonatomic) NSString *addressText;
 @property (strong, nonatomic) NSString *telText;
+@property (strong, nonatomic) UISearchController *nameSearchController;
+
+
 
 @property (strong, nonatomic) UITextView *contentTextView;
 @property (strong,nonatomic) GCGeocodingService *gs;

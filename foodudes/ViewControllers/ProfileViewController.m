@@ -21,6 +21,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *friendsTableView;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 @property (nonatomic, strong) NSMutableArray *dataArray;
+@property (nonatomic, strong) NSMutableArray *dataSource;
 
 @property(strong, nonatomic) NSString * mobileID;
 
@@ -108,6 +109,9 @@
     
     [self.friendsTableView setBackgroundView:nil];
     [self.friendsTableView setBackgroundColor:[UIColor clearColor]];
+    
+    self.dataSource = [NSMutableArray arrayWithCapacity:0];
+
 }
 #pragma mark loadData from Local
 
@@ -122,9 +126,8 @@
     NSData *data = [NSData dataWithContentsOfFile:filePath];
     NSDictionary *rest = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
     
-    NSArray *userArray = rest[@"users"];
+    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *defaultuser =[NSString stringWithFormat:@"%@", [defaults objectForKey:@"userID"]] ;
     NSString *userRecommendCount =[NSString stringWithFormat:@"%@", [defaults objectForKey:@"recommend_count"]];
     UILabel *numOfRestaurant = [[UILabel alloc]initWithFrame:CGRectMake(140, 110, 200, 35)];
                 numOfRestaurant.text = [NSString stringWithFormat:@"已推薦%@間餐廳", userRecommendCount];
@@ -133,20 +136,54 @@
                 [self.view addSubview:numOfRestaurant];
     
     self.dataArray = rest[@"users"];
-    
     NSLog(@"dataArray: %lu", self.dataArray.count);
+  
+    for (int i =0 ; i< self.dataArray.count; i++) {
+        [self.dataSource removeAllObjects];
+        
+        NSMutableDictionary *friendsInfo = self.dataArray[i];
+        
+        NSString *userProfilePhotoURLString = [friendsInfo objectForKey:@"image"];
+        // Download the user's facebook profile picture
+        if (userProfilePhotoURLString) {
+            NSURL *pictureURL = [NSURL URLWithString:userProfilePhotoURLString];
+            NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
+            
+            [NSURLConnection sendAsynchronousRequest:urlRequest
+                                               queue:[NSOperationQueue mainQueue]
+                                   completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                                       if (connectionError == nil && data != nil) {
+                                           
+                                           UIImageView * friendsImage = [[UIImageView alloc]initWithFrame:CGRectMake(5, 5, 50, 50)];
+                                           friendsImage.image =[UIImage imageWithData:data] ;
+                                           friendsImage.layer.cornerRadius = 25.0f;
+                                           friendsImage.layer.masksToBounds =YES;
+                                           [self.dataSource addObject:friendsImage.image];
+                                           
+                                           
+
+                                       } else {
+                                           NSLog(@"Failed to load profile photo.");
+                                       }
+                                   }];
+        }
+
+    }
     
     
+   // [self.friendsTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+
+    
+    
+    // Add numOfFriends Label
     UILabel *numOfFriends = [[UILabel alloc]initWithFrame:CGRectMake(10, 175, 100, 20)];
     numOfFriends.text = [NSString stringWithFormat:@"%.lu位朋友",self.dataArray.count];
     numOfFriends.textColor = [UIColor lightGrayColor];
     numOfFriends.font = [UIFont systemFontOfSize:13];
     
-    
     [self.view addSubview: numOfFriends];
     
-    [self.friendsTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
-    //NSLog(@"userDict: %@", userDict);
+
 
 }
 
@@ -185,6 +222,17 @@
         cell.textLabel.font =[UIFont systemFontOfSize:17];
         cell.detailTextLabel.textColor = [UIColor lightGrayColor];
         cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
+        cell.textLabel.text = [self.dataArray[indexPath.row] objectForKey:@"name"];
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"推薦餐廳數: %@", [self.dataArray[indexPath.row] objectForKey:@"recommend_count"]];
+        
+        UIImageView * friendsImage = [[UIImageView alloc]initWithFrame:CGRectMake(5, 5, 50, 50)];
+        friendsImage.layer.cornerRadius = 25.0f;
+        friendsImage.layer.masksToBounds =YES;
+        friendsImage.backgroundColor = [UIColor grayColor];
+ //       friendsImage.image = [self.dataSource[indexPath.row]];
+        
+        
+        [cell.contentView addSubview:friendsImage];
         
         } else {
         //NSLog(@"I have been initialize. Row = %li", (long)indexPath.row);
@@ -225,15 +273,6 @@
 
     return cell;
 }
-
-//將運算從rowforIndexPath中移出來
-
--(void) loadingFriendsData
-{
-    
-}
-
-
 
 
 #pragma mark loadData from Parse
