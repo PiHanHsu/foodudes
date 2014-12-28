@@ -11,14 +11,21 @@
 #import "GCGeocodingService.h"
 #import "User.h"
 #import "MBProgressHUD.h"
+#import "SPGooglePlacesAutocomplete.h"
 
-@interface AddItemTableViewController ()<UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate, UITextViewDelegate,MBProgressHUDDelegate>
+#define API_KEY @"AIzaSyAFsaDn7vyI8pS53zBgYRxu0HfRwYqH-9E"
+
+@interface AddItemTableViewController ()<UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate, UITextViewDelegate,MBProgressHUDDelegate, UISearchBarDelegate>
 {
     MBProgressHUD  *progressHUD;
+    NSArray *searchResultPlaces;
+    SPGooglePlacesAutocompleteQuery *searchQuery;
     
+    BOOL shouldBeginEditing;
+
 }
 
-
+@property (strong, nonatomic) NSMutableString * placeDetailURL;
 
 @end
 
@@ -27,26 +34,30 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //self.navigationController.title = @"新增推薦地點";
-    gs = [[GCGeocodingService alloc] init];
     
+    gs = [[GCGeocodingService alloc] init];
+    //set up search bar autoComplete
+    searchQuery = [[SPGooglePlacesAutocompleteQuery alloc] initWithApiKey:@"AIzaSyAFsaDn7vyI8pS53zBgYRxu0HfRwYqH-9E"];
+    shouldBeginEditing = YES;
+    self.searchDisplayController.searchBar.placeholder =@"Search";
+
+    
+    // set up TextFields
     self.nameTextField =[[UITextField alloc]initWithFrame:CGRectMake(130, 0, 180, 40)];
     self.nameTextField.textColor =[UIColor blackColor];
     self.nameTextField.delegate =self;
     self.nameTextField.textAlignment = NSTextAlignmentLeft;
     self.nameTextField.font =[UIFont systemFontOfSize:13];
     self.nameTextField.tag=101;
-    self.nameTextField.text = self.nameText;
-    self.nameTextField.placeholder=@"輸入餐廳名稱";
-    if (self.nameTextField.text.length >1) {
-        self.nameTextField.enabled =NO;
-        self.nameTextField.textColor = [UIColor grayColor];
-    }else{
-        self.nameTextField.enabled =YES;
-        self.nameTextField.textColor = [UIColor blackColor];
-    }
-    
-   
+    //self.nameTextField.text = self.nameText;
+//    self.nameTextField.placeholder=@"輸入餐廳名稱";
+//    if (self.nameTextField.text.length >1) {
+//        self.nameTextField.enabled =NO;
+//        self.nameTextField.textColor = [UIColor grayColor];
+//    }else{
+//        self.nameTextField.enabled =YES;
+//        self.nameTextField.textColor = [UIColor blackColor];
+//    }
     
     
     self.addressTextField =[[UITextField alloc]initWithFrame:CGRectMake(130, 0, 180, 40)];
@@ -55,8 +66,8 @@
     self.addressTextField.textAlignment = NSTextAlignmentLeft;
     self.addressTextField.font =[UIFont systemFontOfSize:13];
     self.addressTextField.tag=102;
-    self.addressTextField.text =self.addressText;
-    self.addressTextField.placeholder=@"輸入地址";
+//    self.addressTextField.text =self.addressText;
+//    self.addressTextField.placeholder=@"輸入地址";
     
     
     self.telTextField =[[UITextField alloc]initWithFrame:CGRectMake(130, 0, 180, 40)];
@@ -94,6 +105,31 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+-(void)viewWillAppear:(BOOL)animated{
+    self.nameTextField.text = self.nameText;
+    self.nameTextField.placeholder=@"輸入餐廳名稱";
+    if (self.nameTextField.text.length >1) {
+        self.nameTextField.enabled =NO;
+        self.nameTextField.textColor = [UIColor grayColor];
+    }else{
+        self.nameTextField.enabled =YES;
+        self.nameTextField.textColor = [UIColor blackColor];
+    }
+    
+    self.addressTextField.text =self.addressText;
+    self.addressTextField.placeholder=@"輸入地址";
+
+    self.telTextField.text = self.telText;
+    self.telTextField.placeholder = @"輸入電話";
+    
+}
+
+//-(void) viewWillDisappear:(BOOL)animated{
+//    self.nameText=@"";
+//    self.addressText=@"";
+//    self.telText=@"";
+//}
 
 -(void) hideKeyboard
 {
@@ -360,13 +396,6 @@
 
         
         
-        
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"新增成功"
-//                                                        message:nil
-//                                                       delegate:nil
-//                                              cancelButtonTitle:@"OK"
-//                                              otherButtonTitles:nil];
-//        [alert show];
         
         self.nameTextField.text=@"";
         self.addressTextField.text=@"";

@@ -67,10 +67,10 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="addButton" destination="qME-ez-hQo" id="SS8-Uq-0np"/>
-                <outlet property="address" destination="0iw-YK-Zjv" id="rL2-i9-pQF"/>
-                <outlet property="content" destination="RJ4-ms-6hX" id="FAX-OW-b6u"/>
-                <outlet property="restaurantName" destination="JgN-ec-qWg" id="hpt-Bz-euV"/>
-                <outlet property="tel" destination="BcV-Kr-Rur" id="o2z-yN-Kc3"/>
+                <outlet property="addressTextField" destination="0iw-YK-Zjv" id="Bbg-Xd-w8d"/>
+                <outlet property="contentTextField" destination="RJ4-ms-6hX" id="QlP-Zg-yDC"/>
+                <outlet property="nameTextField" destination="JgN-ec-qWg" id="SWb-3J-wqT"/>
+                <outlet property="telTextField" destination="BcV-Kr-Rur" id="XN7-gN-Qoo"/>
             </connections>
         </view>
     </objects>

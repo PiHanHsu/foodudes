@@ -71,7 +71,7 @@
     
     mapView.frame = CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height-49);
     mapView.myLocationEnabled = YES;
-    //mapView.settings.myLocationButton = YES;
+    mapView.settings.myLocationButton = YES;
     mapView.delegate = self;
     
     self.searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 30)];
@@ -192,9 +192,13 @@
     NSData *data = [NSData dataWithContentsOfFile:filePath];
     NSDictionary *rest = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
     self.restaurantArray = rest[@"restaurants"];
-    [self displayMarker];
-    //NSLog(@"rest: %@", rest);
+    
+    NSLog(@"rest1: %@", self.restaurantArray[1]);
+    NSString *market_lat = [NSString stringWithFormat:@"%@", [self.restaurantArray[1] objectForKey:@"marker_lat"]];
+    double lat = [market_lat doubleValue];
+    NSLog(@"lat: %f", lat);
 
+    [self displayMarker];
 }
 
 -(void)displayMarker
@@ -203,11 +207,11 @@
         self.restaurantName = [self.restaurantArray[i] objectForKey:@"name"];
         //NSLog(@"restaurantName: %@", self.restaurantName);
         
-        NSString *market_lat = [self.restaurantArray[i] objectForKey:@"marker_lat"];
+        NSString *market_lat = [NSString stringWithFormat:@"%@", [self.restaurantArray[i] objectForKey:@"marker_lat"]];
         double lat = [market_lat doubleValue];
         //NSLog(@"lat: %f", lat);
         
-        NSString *market_lng = [self.restaurantArray[i] objectForKey:@"marker_lng"];
+        NSString *market_lng = [NSString stringWithFormat:@"%@", [self.restaurantArray[i] objectForKey:@"marker_lng"]];
         double lng = [market_lng doubleValue];
         //NSLog(@"lng: %f", lng);
 

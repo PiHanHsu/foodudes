@@ -45,6 +45,7 @@
 		E8985B301A1C8AE3004845DF /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8985B2F1A1C8AE3004845DF /* ProfileViewController.m */; };
 		E8985B331A1C8AF9004845DF /* AddItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8985B321A1C8AF9004845DF /* AddItemViewController.m */; };
 		E8985B371A1C8BD7004845DF /* GCGeocodingService.m in Sources */ = {isa = PBXBuildFile; fileRef = E8985B361A1C8BD7004845DF /* GCGeocodingService.m */; };
+		E8A744F81A504329007B626E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8A744F71A504329007B626E /* CoreLocation.framework */; };
 		E8B3CC1B1A1DE0E400C69275 /* infoWindowView.m in Sources */ = {isa = PBXBuildFile; fileRef = E8B3CC1A1A1DE0E400C69275 /* infoWindowView.m */; };
 		E8B3CC1D1A1DE0FC00C69275 /* infoWindowView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E8B3CC1C1A1DE0FC00C69275 /* infoWindowView.xib */; };
 		E8B3CC1F1A1DF38600C69275 /* Pihan.png in Resources */ = {isa = PBXBuildFile; fileRef = E8B3CC1E1A1DF38600C69275 /* Pihan.png */; };
@@ -130,6 +131,7 @@
 		E8985B321A1C8AF9004845DF /* AddItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AddItemViewController.m; path = ViewControllers/AddItemViewController.m; sourceTree = "<group>"; };
 		E8985B351A1C8BD7004845DF /* GCGeocodingService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCGeocodingService.h; sourceTree = "<group>"; };
 		E8985B361A1C8BD7004845DF /* GCGeocodingService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCGeocodingService.m; sourceTree = "<group>"; };
+		E8A744F71A504329007B626E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		E8B3CC191A1DE0E400C69275 /* infoWindowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = infoWindowView.h; sourceTree = "<group>"; };
 		E8B3CC1A1A1DE0E400C69275 /* infoWindowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = infoWindowView.m; sourceTree = "<group>"; };
 		E8B3CC1C1A1DE0FC00C69275 /* infoWindowView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = infoWindowView.xib; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8A744F81A504329007B626E /* CoreLocation.framework in Frameworks */,
 				8DC17CA6ED2031E0E1B9DBE7 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -165,6 +168,7 @@
 		BB6155FD2F4E339A934927A9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E8A744F71A504329007B626E /* CoreLocation.framework */,
 				43E59F99D58FC7249EA4C8D6 /* libPods.a */,
 			);
 			name = Frameworks;

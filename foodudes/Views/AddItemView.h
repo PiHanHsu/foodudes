@@ -9,10 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @interface AddItemView : UIView
-@property (weak, nonatomic) IBOutlet UITextField *restaurantName;
-@property (weak, nonatomic) IBOutlet UITextField *address;
-@property (weak, nonatomic) IBOutlet UITextField *tel;
-@property (weak, nonatomic) IBOutlet UITextView *content;
+@property (weak, nonatomic) IBOutlet UITextField *nameTextField;
+@property (weak, nonatomic) IBOutlet UITextField *addressTextField;
+@property (weak, nonatomic) IBOutlet UITextField *telTextField;
+@property (weak, nonatomic) IBOutlet UITextView *contentTextField;
 @property (weak, nonatomic) IBOutlet UIButton *addButton;
 
 @end

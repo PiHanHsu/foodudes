@@ -13,15 +13,32 @@
 #import "AFNetworking.h"
 #import "User.h"
 #import "AddItemView.h"
+#import "SPGooglePlacesAutocomplete.h"
+#import "MBProgressHUD.h"
+#import "AddItemTableViewController.h"
+
+#define API_KEY @"AIzaSyAFsaDn7vyI8pS53zBgYRxu0HfRwYqH-9E"
 
 
-@interface AddItemViewController ()<UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate>
 
 
-@property(strong, nonatomic) NSString * mobileID;
-@property UISearchBar *searchBar;
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
+@interface AddItemViewController ()<UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate, UITextViewDelegate,MBProgressHUDDelegate, UISearchBarDelegate>
+{
+    MBProgressHUD  *progressHUD;
+    NSArray *searchResultPlaces;
+    SPGooglePlacesAutocompleteQuery *searchQuery;
+    
+    BOOL shouldBeginEditing;
+    
+}
+
+
+@property UIView * addItemView;
+@property (strong, nonatomic) NSMutableString * placeDetailURL;
+@property NSString * restaurantName;
+@property NSString * restaurantAddress;
+@property NSString * restaurantTel;
 
 @end
 
@@ -30,19 +47,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    searchQuery = [[SPGooglePlacesAutocompleteQuery alloc] initWithApiKey:@"AIzaSyAFsaDn7vyI8pS53zBgYRxu0HfRwYqH-9E"];
+    shouldBeginEditing = YES;
     
-//    User * currentUser = [[User alloc]init];
-//    [currentUser getUserData];
-//    
-    //NSLog(@"Username: %@", currentUser.userName);
-    self.searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 30)];
-    self.searchBar.showsSearchResultsButton=YES;
-    self.searchBar.searchBarStyle = UIBarStyleDefault;
-    self.searchBar.placeholder=@"新增餐廳";
-    self.searchBar.delegate=self;
+    UISearchBar *searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
+//    self.searchDisplayController = [[UISearchDisplayController alloc]initWithSearchBar:searchBar contentsController:self];
+    self.searchDisplayController.searchBar.placeholder =@"輸入餐廳名稱";
     
-    [self.view addSubview:self.searchBar];
-    [self getData];
+
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -50,168 +63,177 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma tableView
+#pragma mark -
+#pragma mark UITableViewDataSource
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return 1 ;
+    //NSLog(@"searchResult: %@", searchResultPlaces);
+    //NSLog(@"search count: %lu", searchResultPlaces.count);
+    return [searchResultPlaces count];
+    
+    
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return 10;
-    
+- (SPGooglePlacesAutocompletePlace *)placeAtIndexPath:(NSIndexPath *)indexPath {
+    return searchResultPlaces[indexPath.row];
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    return 60.0;
-}
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSString *CellIdentifier = @"TableViewCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *cellIdentifier = @"SPGooglePlacesAutocompleteCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-    } else {
-        NSLog(@"I have been initialize. Row = %li", (long)indexPath.row);
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
     
-    cell.textLabel.text =@"Restanuant Name";
-    cell.detailTextLabel.text = @"address";
-    cell.imageView.image = [UIImage imageNamed:@"restaurant"];
-    
+    cell.textLabel.font = [UIFont fontWithName:@"GillSans" size:16.0];
+    cell.textLabel.text = [self placeAtIndexPath:indexPath].name;
     return cell;
-    
-}
-- (IBAction)addButtonPressed:(id)sender {
-    
-    AddItemView *itemView =  [[[NSBundle mainBundle] loadNibNamed:@"AddItemView" owner:self options:nil] objectAtIndex:0];
-    
-    itemView.center = self.view.center;
-    itemView.layer.cornerRadius =10.f;
-    itemView.layer.masksToBounds =YES;
-    
-    
-    [self.view addSubview:itemView];
-    
-    
 }
 
-#pragma getData
--(void)getData
-{
-    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://106.185.53.8/"]];
-    NSString *token =[FBSession activeSession].accessTokenData.accessToken;
-    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-                            token,    @"fb_token"
-                            , nil];
-    NSMutableURLRequest *request = [httpClient requestWithMethod:@"POST"
-                                                            path:@"api/v1/auth/log_in"
-                                                      parameters:params];
-    //2.準備operation
-    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    [httpClient registerHTTPOperationClass:[AFHTTPRequestOperation class]];
-    
-    //3.準備callback block
-    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
-#pragma mark - progressed 完成
-        //載入完成
-        NSLog(@"Completed!");
-        NSString *tmp = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-        //test log
-        //NSLog(@"Response: %@",tmp);
-#pragma mark - 轉資料11/26
-        NSData *rawData = [tmp dataUsingEncoding:NSUTF8StringEncoding];
-        NSError *e;
 
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:rawData options:NSJSONReadingMutableContainers error:&e];
-        NSLog(@"Data from Fung: %@", dict);
-        NSString *mobileID = [NSString stringWithFormat:@"%@", [dict objectForKey:@"mobile_id"]];
-        self.mobileID = mobileID;
-        [self loadRestaurntData];
+
+
+
+#pragma mark UITableViewDelegate
+
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    SPGooglePlacesAutocompletePlace *place = [self placeAtIndexPath:indexPath];
+    [place resolveToPlacemark:^(CLPlacemark *placemark, NSString *addressString, NSError *error) {
+        if (error) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could not find selected Place"
+                                                            message:error.localizedDescription
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil, nil];
+            [alert show];
+        } else if (placemark) {
+
+            self.placeDetailURL = [NSMutableString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/details/json?reference=%@&sensor=ture&key=%@",
+                                   place.reference, API_KEY];
+            [self runURLRequest];
+            
+        }
+    }];
+}
+
+- (void)runURLRequest {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.placeDetailURL] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
+    
+    NSMutableURLRequest *mutableRequest = [request mutableCopy];
+    
+    [NSURLConnection sendAsynchronousRequest:mutableRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        NSError *error = nil;
+        if (data) {
+            NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+            if (!error) {
+                NSDictionary *resultsDict = [jsonDictionary objectForKey:@"result"];
+                NSDictionary * geometryDict = [resultsDict objectForKey:@"geometry"];
+                NSString *name = [resultsDict objectForKey:@"name"];
+                NSString *address = [resultsDict objectForKey:@"formatted_address"]
+                ;
+                NSString * tel = [resultsDict objectForKey:@"formatted_phone_number"];
+                AddItemView *itemView =  [[[NSBundle mainBundle] loadNibNamed:@"AddItemView" owner:self options:nil] objectAtIndex:0];
+                
+                self.addItemView = itemView;
+                self.addItemView.center = self.view.center;
+                self.addItemView.layer.cornerRadius =10.f;
+                self.addItemView.layer.masksToBounds =YES;
+                
+                itemView.nameTextField.text=name;
+                itemView.addressTextField.text=address;
+                itemView.telTextField.text=tel;
+                
+                self.restaurantName =name;
+                self.restaurantAddress = address;
+                self.restaurantTel= tel;
+                
+                [self _ViewControllerAnimated:YES];
+                //[self.view addSubview:self.addItemView];
+                //[itemView.addButton addTarget:self action:@selector(ViewDismiss:) forControlEvents:UIControlEventTouchUpInside];
+                
+            } else {
+                NSLog(@"Error with: %@", error);
+            }
+        }
         
-       } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error");
     }];
     
-     //4. Start傳輸
-     [operation start];
+}
+
+
+
+-(void)ViewDismiss:(id)sender{
+    
+    [self.addItemView removeFromSuperview];
     
 }
 
--(void) loadRestaurntData
+#pragma mark SearchBar
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
+    [self.searchDisplayController.searchBar resignFirstResponder];
+    
+    if (searchResultPlaces.count == 0)
+    {
+        self.restaurantName=self.searchDisplayController.searchBar.text;
+        [self _ViewControllerAnimated:YES];
+    }
+    
+    self.searchDisplayController.searchBar.text=@"";
+    self.searchDisplayController.searchBar.placeholder=@"輸入餐廳名稱";
+}
+
+
+#pragma mark -
+#pragma mark UISearchDisplayDelegate
+
+- (void)handleSearchForSearchString:(NSString *)searchString {
+    
+    searchQuery.input = searchString;
+    NSLog(@"searchString1: %@", searchString);
+    [searchQuery fetchPlaces:^(NSArray *places, NSError *error) {
+        if (error) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could not fetch Places"
+                                                            message:error.localizedDescription
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil, nil];
+            [alert show];
+        } else {
+            searchResultPlaces = places;
+            [self.searchDisplayController.searchResultsTableView reloadData];
+        }
+    }];
+}
+
+- (BOOL)searchDisplayController:(UISearchController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
+    NSLog(@"searchString2: %@", searchString);
+    [self handleSearchForSearchString:searchString];
+    
+    // Return YES to cause the search result table view to be reloaded.
+    return YES;
+}
+
+
+- (void)goAddItemPage:(id)sender
 {
     
-    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://106.185.53.8/"]];
+    [self _ViewControllerAnimated:YES];
     
-    NSString * mobileID = self.mobileID;
-    NSLog(@"mobileID: %@", mobileID);
-    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-                            mobileID,    @"mobile_id"
-                            , nil];
-    //NSLog(@"mobile_id: %@", mobileID);
-    NSMutableURLRequest *request = [httpClient requestWithMethod:@"GET"
-                                                            path:@"api/v1/maps/index"
-                                                      parameters:params];
-    //2.準備operation
-    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    [httpClient registerHTTPOperationClass:[AFHTTPRequestOperation class]];
+}
+- (void)_ViewControllerAnimated:(BOOL)animated {
+    [self.tabBarController setSelectedIndex:0];
+    UINavigationController *navController = [[self.tabBarController viewControllers] objectAtIndex:0];
+    AddItemTableViewController *addItemVC = [[navController viewControllers] objectAtIndex:0];
+    addItemVC.nameText = self.restaurantName;
+    addItemVC.addressText = self.restaurantAddress;
+    addItemVC.telText = self.restaurantTel;
     
-    //3.準備callback block
-    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-
-        NSLog(@"Completed!");
-        NSString *tmp = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-
-        NSData *rawData = [tmp dataUsingEncoding:NSUTF8StringEncoding];
-        NSError *e;
-        
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:rawData options:NSJSONReadingMutableContainers error:&e];
-        NSLog(@"Query2 Data: %@", dict);
-        NSString * restaurants = [NSString stringWithFormat:@"%@", [dict objectForKey:@"restaurants"]];
-        NSLog(@"Restaurant Data: %@", restaurants);
-        
-        NSString * users = [NSString stringWithFormat:@"%@", [dict objectForKey:@"users"]];
-        NSLog(@"users Data: %@", users);
-        
-        
-        NSArray * array =[dict objectForKey:@"restaurants"];
-        NSLog(@"Name: %@", array[0]);
-        
-        NSString *userName = [array[0] objectForKey:@"name"];
-        NSLog(@"user name: %@", userName);
-        
-        NSString *market_lat = [array[0] objectForKey:@"marker_lat"];
-        double lat = [market_lat doubleValue];
-        NSLog(@"lat: %f", lat);
-        
-        NSString *market_lng = [array[0] objectForKey:@"marker_lng"];
-        double lng = [market_lng doubleValue];
-        NSLog(@"lng: %f", lng);
-        
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error!!!!!");
-    }];
-    
-    //4. Start傳輸
-    [operation start];
-
-    
+//    addItemVC.placeLat = self.restaurantLat;
+//    addItemVC.placeLng = self.restaurantLng;
     
 }
 
-
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
