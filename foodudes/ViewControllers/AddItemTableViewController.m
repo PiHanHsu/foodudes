@@ -34,13 +34,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+     [[self navigationController] setNavigationBarHidden:NO animated:YES];
     gs = [[GCGeocodingService alloc] init];
-    //set up search bar autoComplete
-    searchQuery = [[SPGooglePlacesAutocompleteQuery alloc] initWithApiKey:@"AIzaSyAFsaDn7vyI8pS53zBgYRxu0HfRwYqH-9E"];
-    shouldBeginEditing = YES;
-    self.searchDisplayController.searchBar.placeholder =@"Search";
-
     
     // set up TextFields
     self.nameTextField =[[UITextField alloc]initWithFrame:CGRectMake(130, 0, 180, 40)];
@@ -49,15 +44,6 @@
     self.nameTextField.textAlignment = NSTextAlignmentLeft;
     self.nameTextField.font =[UIFont systemFontOfSize:13];
     self.nameTextField.tag=101;
-    //self.nameTextField.text = self.nameText;
-//    self.nameTextField.placeholder=@"輸入餐廳名稱";
-//    if (self.nameTextField.text.length >1) {
-//        self.nameTextField.enabled =NO;
-//        self.nameTextField.textColor = [UIColor grayColor];
-//    }else{
-//        self.nameTextField.enabled =YES;
-//        self.nameTextField.textColor = [UIColor blackColor];
-//    }
     
     
     self.addressTextField =[[UITextField alloc]initWithFrame:CGRectMake(130, 0, 180, 40)];
@@ -66,8 +52,6 @@
     self.addressTextField.textAlignment = NSTextAlignmentLeft;
     self.addressTextField.font =[UIFont systemFontOfSize:13];
     self.addressTextField.tag=102;
-//    self.addressTextField.text =self.addressText;
-//    self.addressTextField.placeholder=@"輸入地址";
     
     
     self.telTextField =[[UITextField alloc]initWithFrame:CGRectMake(130, 0, 180, 40)];
@@ -76,8 +60,8 @@
     self.telTextField.textAlignment = NSTextAlignmentLeft;
     self.telTextField.font =[UIFont systemFontOfSize:13];
     self.telTextField.tag=103;
-    self.telTextField.text = self.telText;
-    self.telTextField.placeholder = @"輸入電話";
+//    self.telTextField.text = self.telText;
+//    self.telTextField.placeholder = @"輸入電話";
     
     self.contentTextView  =[[UITextView alloc]initWithFrame:CGRectMake(10, 10, self.view.frame.size.width -20, 150 )];
     self.contentTextView.textColor =[UIColor blackColor];
@@ -93,12 +77,6 @@
     [gestureRecognizer setDelegate:self];
     [self.view addGestureRecognizer:gestureRecognizer];
     
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -125,11 +103,12 @@
     
 }
 
-//-(void) viewWillDisappear:(BOOL)animated{
-//    self.nameText=@"";
-//    self.addressText=@"";
-//    self.telText=@"";
-//}
+-(void) viewDidDisappear:(BOOL)animated{
+    NSLog(@"viewDidDisappear");
+    self.nameText=@"";
+    self.addressText=@"";
+    self.telText=@"";
+}
 
 -(void) hideKeyboard
 {
@@ -241,14 +220,14 @@
 
 }
 
--(CGFloat) tableView:(UITableView *)tableView estimatedHeightForFooterInSection:(NSInteger)section
-{
-    // 把section 2 以下多的空白切掉
-    if (section ==1)
-        return 200.0f;
-    else
-        return 0.0f;
-}
+//-(CGFloat) tableView:(UITableView *)tableView estimatedHeightForFooterInSection:(NSInteger)section
+//{
+//    // 把section 2 以下多的空白切掉
+//    if (section ==1)
+//        return 200.0f;
+//    else
+//        return 0.0f;
+//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {

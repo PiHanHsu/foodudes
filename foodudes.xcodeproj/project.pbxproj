@@ -75,8 +75,8 @@
 		E834A1561A359F5D00A2F191 /* AddItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = AddItemView.xib; path = ../ViewControllers/AddItemView.xib; sourceTree = "<group>"; };
 		E834A1581A35A37900A2F191 /* AddItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddItemView.h; sourceTree = "<group>"; };
 		E834A1591A35A37900A2F191 /* AddItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddItemView.m; sourceTree = "<group>"; };
-		E854F8A11A37F60300A466D5 /* AddItemTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddItemTableViewController.h; sourceTree = "<group>"; };
-		E854F8A21A37F60300A466D5 /* AddItemTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddItemTableViewController.m; sourceTree = "<group>"; };
+		E854F8A11A37F60300A466D5 /* AddItemTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddItemTableViewController.h; path = ../ViewControllers/AddItemTableViewController.h; sourceTree = "<group>"; };
+		E854F8A21A37F60300A466D5 /* AddItemTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AddItemTableViewController.m; path = ../ViewControllers/AddItemTableViewController.m; sourceTree = "<group>"; };
 		E858CEE71A39338A00825944 /* Logo for login@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Logo for login@2x.png"; sourceTree = "<group>"; };
 		E858CEE91A3934C400825944 /* launchImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launchImage.png; sourceTree = "<group>"; };
 		E858CEEB1A39377300825944 /* add@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add@2x.png"; sourceTree = "<group>"; };
@@ -127,8 +127,8 @@
 		E8985B2C1A1C8AD4004845DF /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
 		E8985B2E1A1C8AE3004845DF /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
 		E8985B2F1A1C8AE3004845DF /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileViewController.m; sourceTree = "<group>"; };
-		E8985B311A1C8AF9004845DF /* AddItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddItemViewController.h; path = ViewControllers/AddItemViewController.h; sourceTree = "<group>"; };
-		E8985B321A1C8AF9004845DF /* AddItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AddItemViewController.m; path = ViewControllers/AddItemViewController.m; sourceTree = "<group>"; };
+		E8985B311A1C8AF9004845DF /* AddItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddItemViewController.h; sourceTree = "<group>"; };
+		E8985B321A1C8AF9004845DF /* AddItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddItemViewController.m; sourceTree = "<group>"; };
 		E8985B351A1C8BD7004845DF /* GCGeocodingService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCGeocodingService.h; sourceTree = "<group>"; };
 		E8985B361A1C8BD7004845DF /* GCGeocodingService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCGeocodingService.m; sourceTree = "<group>"; };
 		E8A744F71A504329007B626E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -249,8 +249,6 @@
 			isa = PBXGroup;
 			children = (
 				E8B3CC2A1A1EE3E500C69275 /* foodudes_logo_去背-2.png */,
-				E8985B311A1C8AF9004845DF /* AddItemViewController.h */,
-				E8985B321A1C8AF9004845DF /* AddItemViewController.m */,
 				E8985B031A1C851C004845DF /* AppDelegate.h */,
 				E8985B041A1C851C004845DF /* AppDelegate.m */,
 				E8985B061A1C851C004845DF /* ViewController.h */,
@@ -291,6 +289,8 @@
 		E8985B261A1C8584004845DF /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				E854F8A11A37F60300A466D5 /* AddItemTableViewController.h */,
+				E854F8A21A37F60300A466D5 /* AddItemTableViewController.m */,
 				E8B3CC191A1DE0E400C69275 /* infoWindowView.h */,
 				E8B3CC1A1A1DE0E400C69275 /* infoWindowView.m */,
 				E8B3CC1C1A1DE0FC00C69275 /* infoWindowView.xib */,
@@ -313,8 +313,8 @@
 				E8985B2C1A1C8AD4004845DF /* SearchViewController.m */,
 				E8985B2E1A1C8AE3004845DF /* ProfileViewController.h */,
 				E8985B2F1A1C8AE3004845DF /* ProfileViewController.m */,
-				E854F8A11A37F60300A466D5 /* AddItemTableViewController.h */,
-				E854F8A21A37F60300A466D5 /* AddItemTableViewController.m */,
+				E8985B311A1C8AF9004845DF /* AddItemViewController.h */,
+				E8985B321A1C8AF9004845DF /* AddItemViewController.m */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";

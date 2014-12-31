@@ -63,15 +63,15 @@
                                }];
         
 }
-    UIImageView *background = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"background"]];
-    
-    UIVisualEffect *blurEffect;
-    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]
-    ;
-    UIVisualEffectView *visualEffectView;
-    visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    visualEffectView.frame = background.bounds;
-    [background addSubview:visualEffectView];
+//    UIImageView *background = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"background"]];
+//    
+//    UIVisualEffect *blurEffect;
+//    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]
+//    ;
+//    UIVisualEffectView *visualEffectView;
+//    visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+//    visualEffectView.frame = background.bounds;
+//    [background addSubview:visualEffectView];
     
     
     UIView *view1 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 600, 200)];
@@ -82,7 +82,7 @@
     UIView *view2 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 600, 60)];
     view2.backgroundColor = [UIColor colorWithRed:246/255.0f green:246/255.0f blue:248/255.0f alpha:1];
     
-    [self.view insertSubview:background atIndex:1];
+    //[self.view insertSubview:background atIndex:1];
 
     [view1 addSubview:view2];
     [view2 addSubview:self.headImageView];
@@ -218,7 +218,7 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.backgroundColor =[UIColor clearColor];
-        cell.textLabel.textColor = [UIColor whiteColor];
+        cell.textLabel.textColor = [UIColor darkGrayColor];
         cell.textLabel.font =[UIFont systemFontOfSize:17];
         cell.detailTextLabel.textColor = [UIColor lightGrayColor];
         cell.detailTextLabel.font = [UIFont systemFontOfSize:13];

@@ -17,7 +17,7 @@
 #import "MBProgressHUD.h"
 #import "AddItemTableViewController.h"
 
-#define API_KEY @"AIzaSyAFsaDn7vyI8pS53zBgYRxu0HfRwYqH-9E"
+#define API_KEY @"AIzaSyD9Phzy4CZWofeZD3RnEuFemlWTaM4n_po"
 
 
 
@@ -47,15 +47,31 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    searchQuery = [[SPGooglePlacesAutocompleteQuery alloc] initWithApiKey:@"AIzaSyAFsaDn7vyI8pS53zBgYRxu0HfRwYqH-9E"];
+   
+    searchQuery = [[SPGooglePlacesAutocompleteQuery alloc] initWithApiKey:API_KEY];
     shouldBeginEditing = YES;
     
-    UISearchBar *searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
-//    self.searchDisplayController = [[UISearchDisplayController alloc]initWithSearchBar:searchBar contentsController:self];
-    self.searchDisplayController.searchBar.placeholder =@"輸入餐廳名稱";
+//    UISearchBar *searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 40)];
+//    
+//    searchBar.placeholder =@"輸入餐廳名稱";
+//    searchBar.delegate =self;
+//    
+//    [self.view addSubview:searchBar];
+    
     
 
+    self.searchDisplayController.searchBar.placeholder =@"輸入餐廳名稱";
+    
+}
 
+-(void) viewWillAppear:(BOOL)animated{
+     [[self navigationController] setNavigationBarHidden:YES animated:YES];
+}
+
+-(void) viewDidDisappear:(BOOL)animated
+{
+    self.searchDisplayController.searchBar.text=@"";
+    self.searchDisplayController.searchBar.placeholder=@"輸入餐廳名稱";
 }
 
 - (void)didReceiveMemoryWarning {
@@ -150,8 +166,7 @@
                 self.restaurantTel= tel;
                 
                 [self _ViewControllerAnimated:YES];
-                //[self.view addSubview:self.addItemView];
-                //[itemView.addButton addTarget:self action:@selector(ViewDismiss:) forControlEvents:UIControlEventTouchUpInside];
+                
                 
             } else {
                 NSLog(@"Error with: %@", error);
@@ -176,12 +191,98 @@
     
     if (searchResultPlaces.count == 0)
     {
-        self.restaurantName=self.searchDisplayController.searchBar.text;
-        [self _ViewControllerAnimated:YES];
+        NSString *str = self.searchDisplayController.searchBar.text;
+        NSString *alertMessage = [NSString stringWithFormat:@"新增“%@”到foodudes", str];
+        UIAlertController * alert=   [UIAlertController
+                                      alertControllerWithTitle:@"抱歉目前無此餐廳資訊"
+                                      message:alertMessage
+                                      preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* ok = [UIAlertAction
+                             actionWithTitle:@"OK"
+                             style:UIAlertActionStyleDefault
+                             handler:^(UIAlertAction * action)
+                             {
+                                 self.restaurantName=self.searchDisplayController.searchBar.text;
+                                 [self _ViewControllerAnimated:YES];
+                                 self.restaurantName=self.searchDisplayController.searchBar.text;
+
+                             }];
+        UIAlertAction* cancel = [UIAlertAction
+                                 actionWithTitle:@"Cancel"
+                                 style:UIAlertActionStyleDefault
+                                 handler:^(UIAlertAction * action)
+                                 {
+                                     [alert dismissViewControllerAnimated:YES completion:nil];
+                                     
+                                 }];
+        
+        [alert addAction:ok];
+        [alert addAction:cancel];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
+    }
+    else if  (searchResultPlaces.count > 0){
+        UIAlertController * view=   [UIAlertController
+                                     alertControllerWithTitle:@"直接點選上列餐廳"
+                                     message:@"若想新增餐廳不再上列，請點選新增"
+                                     preferredStyle:UIAlertControllerStyleActionSheet];
+        
+        UIAlertAction* ok = [UIAlertAction
+                             actionWithTitle:@"新增"
+                             style:UIAlertActionStyleDefault
+                             handler:^(UIAlertAction * action)
+                             {
+                                 NSString *str = self.searchDisplayController.searchBar.text;
+                                 NSString *alertMessage = [NSString stringWithFormat:@"新增“%@”到foodudes", str];
+                                 UIAlertController * alert=   [UIAlertController
+                                                               alertControllerWithTitle:alertMessage
+                                                               message:nil
+                                                               preferredStyle:UIAlertControllerStyleAlert];
+                                 
+                                 UIAlertAction* ok = [UIAlertAction
+                                                      actionWithTitle:@"OK"
+                                                      style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction * action)
+                                                      {
+                                                          self.restaurantName=self.searchDisplayController.searchBar.text;
+                                                          [self _ViewControllerAnimated:YES];
+                                                          self.restaurantName=self.searchDisplayController.searchBar.text;
+                                                          
+                                                      }];
+                                 UIAlertAction* cancel = [UIAlertAction
+                                                          actionWithTitle:@"Cancel"
+                                                          style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action)
+                                                          {
+                                                              [alert dismissViewControllerAnimated:YES completion:nil];
+                                                              
+                                                          }];
+                                 
+                                 [alert addAction:ok];
+                                 [alert addAction:cancel];
+                                 
+                                 [self presentViewController:alert animated:YES completion:nil];
+
+                                 
+                             }];
+        UIAlertAction* cancel = [UIAlertAction
+                                 actionWithTitle:@"取消"
+                                 style:UIAlertActionStyleDefault
+                                 handler:^(UIAlertAction * action)
+                                 {
+                                     [view dismissViewControllerAnimated:YES completion:nil];
+                                     
+                                 }];
+        
+        
+        [view addAction:ok];
+        [view addAction:cancel];
+        [self presentViewController:view animated:YES completion:nil];
+
     }
     
-    self.searchDisplayController.searchBar.text=@"";
-    self.searchDisplayController.searchBar.placeholder=@"輸入餐廳名稱";
 }
 
 
@@ -223,16 +324,20 @@
     
 }
 - (void)_ViewControllerAnimated:(BOOL)animated {
-    [self.tabBarController setSelectedIndex:0];
-    UINavigationController *navController = [[self.tabBarController viewControllers] objectAtIndex:0];
-    AddItemTableViewController *addItemVC = [[navController viewControllers] objectAtIndex:0];
+//        UINavigationController *navController = [[self.tabBarController viewControllers] objectAtIndex:0];
+//    AddItemTableViewController *addItemVC = [[navController viewControllers] objectAtIndex:0];
+    AddItemTableViewController *addItemVC = [self.storyboard instantiateViewControllerWithIdentifier:@"addItemTableViewController"];
+    
+
     addItemVC.nameText = self.restaurantName;
     addItemVC.addressText = self.restaurantAddress;
     addItemVC.telText = self.restaurantTel;
+     [self.navigationController pushViewController:addItemVC animated:YES];
     
 //    addItemVC.placeLat = self.restaurantLat;
 //    addItemVC.placeLng = self.restaurantLng;
-    
+   // [self.tabBarController setSelectedIndex:0];
+
 }
 
 

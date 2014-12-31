@@ -64,12 +64,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initializeProgressHUD:@"Loading..."];
-    
+   
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:25.023868 longitude:121.528976 zoom:15 bearing:0 viewingAngle:0];
     
     mapView = [GMSMapView mapWithFrame:CGRectZero camera:camera];
     
-    mapView.frame = CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height-49);
+    mapView.frame = CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height-65);
     mapView.myLocationEnabled = YES;
     mapView.settings.myLocationButton = YES;
     mapView.delegate = self;
@@ -116,11 +116,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-//    GMSMarker *marker = [[GMSMarker alloc] init];
-//    marker.position = CLLocationCoordinate2DMake(25.023950, 121.528976);
-//    //marker.icon =[UIImage imageNamed:@"pin"];
-//    marker.appearAnimation = kGMSMarkerAnimationPop;
-//    marker.map = mapView;
+ [[self navigationController] setNavigationBarHidden:YES animated:YES];
 }
 - (void)initializeProgressHUD:(NSString *)msg
 {
@@ -505,15 +501,23 @@ didChangeCameraPosition:(GMSCameraPosition *)position{
 }
 
 - (void)_ViewControllerAnimated:(BOOL)animated {
-    [self.tabBarController setSelectedIndex:0];
-    UINavigationController *navController = [[self.tabBarController viewControllers] objectAtIndex:0];
-    AddItemTableViewController *addItemVC = [[navController viewControllers] objectAtIndex:0];
+    
+
+    
+    
+//    UINavigationController *navController = [[self.tabBarController viewControllers] objectAtIndex:0];
+//    AddItemTableViewController *addItemVC = [[navController viewControllers] objectAtIndex:0];
+    AddItemTableViewController *addItemVC = [self.storyboard instantiateViewControllerWithIdentifier:@"addItemTableViewController"];
+
+
       addItemVC.nameText = self.restaurantName;
       addItemVC.addressText = self.restaurantAddress;
       addItemVC.telText = self.restaurantTel;
       addItemVC.placeLat = self.restaurantLat;
       addItemVC.placeLng = self.restaurantLng;
-
+    
+    [self.navigationController pushViewController:addItemVC animated:YES];
+   // [self.tabBarController setSelectedIndex:0];
 }
 
 
