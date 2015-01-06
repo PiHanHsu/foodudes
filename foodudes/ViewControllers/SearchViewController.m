@@ -105,10 +105,6 @@
     
 }
 
-//- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
-//{
-//    NSLog(@"%@", [locations lastObject]);
-//}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -116,7 +112,8 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
- [[self navigationController] setNavigationBarHidden:YES animated:YES];
+ [self.navigationController setNavigationBarHidden:YES animated:YES];
+
 }
 - (void)initializeProgressHUD:(NSString *)msg
 {

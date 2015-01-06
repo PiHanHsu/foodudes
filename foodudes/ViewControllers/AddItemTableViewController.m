@@ -15,7 +15,7 @@
 
 #define API_KEY @"AIzaSyAFsaDn7vyI8pS53zBgYRxu0HfRwYqH-9E"
 
-@interface AddItemTableViewController ()<UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate, UITextViewDelegate,MBProgressHUDDelegate, UISearchBarDelegate>
+@interface AddItemTableViewController ()<UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate, UITextViewDelegate,MBProgressHUDDelegate, UISearchBarDelegate, UIImagePickerControllerDelegate>
 {
     MBProgressHUD  *progressHUD;
     NSArray *searchResultPlaces;
@@ -26,6 +26,8 @@
 }
 
 @property (strong, nonatomic) NSMutableString * placeDetailURL;
+@property (strong, nonatomic) UIImageView * restaurantImageView;
+
 
 @end
 
@@ -77,6 +79,12 @@
     [gestureRecognizer setDelegate:self];
     [self.view addGestureRecognizer:gestureRecognizer];
     
+    //餐廳照片
+    self.restaurantImageView = [[ UIImageView alloc]initWithFrame:CGRectMake(10, 40, 100, 100)];
+    self.restaurantImageView.backgroundColor = [UIColor greenColor];
+    [self.view addSubview:self.restaurantImageView];
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -100,6 +108,10 @@
 
     self.telTextField.text = self.telText;
     self.telTextField.placeholder = @"輸入電話";
+    
+    UIBarButtonItem *addButton = [[ UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(checkLatnLng:)];
+        
+    self.navigationItem.rightBarButtonItem =addButton;
     
 }
 
@@ -185,14 +197,14 @@
     if(section ==1){
         UIView *footerView =[[UIView alloc]initWithFrame:CGRectMake(0, 0,self.view.frame.size.width, 120)];
         UIButton *addcharity = [[UIButton alloc]initWithFrame:CGRectMake(14, 20, (self.view.frame.size.width/2)- 20, 40)];
-        [addcharity setTitle:@"新增" forState:UIControlStateNormal];
-        [addcharity addTarget:self action:@selector(checkLatnLng:) forControlEvents:UIControlEventTouchUpInside];
+        [addcharity setTitle:@"Camera" forState:UIControlStateNormal];
+        [addcharity addTarget:self action:@selector(showOptions:) forControlEvents:UIControlEventTouchUpInside];
         [addcharity setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
                 addcharity.backgroundColor = [UIColor greenColor];
         
         UIButton *cancelButton = [[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width/2)+6, 20, (self.view.frame.size.width/2)- 20, 40)];
         [cancelButton setTitle:@"取消" forState:UIControlStateNormal];
-        [cancelButton addTarget:self action:@selector(cencelButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [cancelButton addTarget:self action:@selector(cancelButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
         [cancelButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         
         cancelButton.backgroundColor = [UIColor greenColor];
@@ -209,8 +221,9 @@
     
 }
 
-- (void) cencelButtonPressed: (id) sender{
+- (void) cancelButtonPressed: (id) sender{
     
+    NSLog(@"Cancel");
     self.nameTextField.text=@"";
     self.addressTextField.text=@"";
     self.telTextField.text=@"";
@@ -220,14 +233,14 @@
 
 }
 
-//-(CGFloat) tableView:(UITableView *)tableView estimatedHeightForFooterInSection:(NSInteger)section
-//{
-//    // 把section 2 以下多的空白切掉
-//    if (section ==1)
-//        return 200.0f;
-//    else
-//        return 0.0f;
-//}
+-(CGFloat) tableView:(UITableView *)tableView estimatedHeightForFooterInSection:(NSInteger)section
+{
+    // 把section 2 以下多的空白切掉
+    if (section ==1)
+        return 200.0f;
+    else
+        return 0.0f;
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -291,6 +304,86 @@
     
     return cell;
     
+}
+#pragma mark Camera
+
+- (void) showOptions:(id)sender{
+    UIAlertController * view=   [UIAlertController
+                                 alertControllerWithTitle:nil
+                                 message:nil
+                                 preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction* camera = [UIAlertAction
+                         actionWithTitle:@"Take photo from Camera"
+                         style:UIAlertActionStyleDefault
+                         handler:^(UIAlertAction * action)
+                         {
+                             [self takePhoto];
+                             [view dismissViewControllerAnimated:YES completion:nil];
+                             
+                         }];
+    UIAlertAction* album = [UIAlertAction
+                             actionWithTitle:@"Choose photo from Album"
+                             style:UIAlertActionStyleDefault
+                             handler:^(UIAlertAction * action)
+                             {
+                                 [self selectPhoto];
+                                 [view dismissViewControllerAnimated:YES completion:nil];
+                                 
+                             }];
+    
+    
+    [view addAction:camera];
+    [view addAction:album];
+    [self presentViewController:view animated:YES completion:nil];
+}
+- (void)selectPhoto {
+    //使用內建相簿
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        
+        picker.delegate = self;
+        picker.allowsEditing = YES;
+        picker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;//使用內建相簿
+        //modal
+        [self presentViewController:picker animated:YES completion:nil];
+    }
+}
+
+- (void)takePhoto {
+    
+    //先檢查是否有照相機功能
+    if ([UIImagePickerController isSourceTypeAvailable:(UIImagePickerControllerSourceTypeSavedPhotosAlbum)]) {
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        
+        picker.delegate = self;
+        picker.allowsEditing = YES;
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        picker.showsCameraControls =YES;
+        
+        [self presentViewController:picker animated:YES completion:nil];
+    }
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
+    
+    UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
+    self.restaurantImageView.image = chosenImage;
+
+    
+        if (picker.sourceType == UIImagePickerControllerSourceTypeCamera){
+           UIImageWriteToSavedPhotosAlbum(self.restaurantImageView.image, nil, nil, nil);
+        }
+    [picker dismissViewControllerAnimated:YES completion:nil];
+
+    }
+    
+
+
+//user有可能會按"cancel"取消操作
+//只要移除PickerController就可以了
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker{
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark AddNewPlaces
