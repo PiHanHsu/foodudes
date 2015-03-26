@@ -44,7 +44,7 @@
     NSString *userProfilePhotoURLString = [PFUser currentUser][@"profile"][@"pictureURL"];
     // Download the user's facebook profile picture
     
-    self.headImageView =  [[UIImageView alloc]initWithFrame:CGRectMake(10, 72, 100, 100)];
+    self.headImageView =  [[UIImageView alloc]initWithFrame:CGRectMake(10, 30, 100, 100)];
     
     NSLog(@"URL: %@", userProfilePhotoURLString);
     
@@ -63,29 +63,31 @@
                                }];
         
 }
-//    UIImageView *background = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"background"]];
-//    
-//    UIVisualEffect *blurEffect;
-//    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]
-//    ;
-//    UIVisualEffectView *visualEffectView;
-//    visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-//    visualEffectView.frame = background.bounds;
-//    [background addSubview:visualEffectView];
+    UIImageView *background = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"background"]];
+    background.frame =CGRectMake(0, 0, 600,self.view.frame.size.height);
     
+    UIVisualEffect *blurEffect;
+    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]
+    ;
+    UIVisualEffectView *visualEffectView;
+    visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    visualEffectView.frame = background.bounds;
+    [background addSubview:visualEffectView];
+    [self.view insertSubview:background atIndex:1];
+   
     
-    UIView *view1 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 600, 200)];
+    UIView *view1 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 600, 155)];
     view1.backgroundColor = [UIColor colorWithRed:58/255.0f green:57/255.0f blue:52/255.0f alpha:.8f];
     
-    [self.view insertSubview:view1 atIndex:1];
+    [self.view addSubview:view1];
     
-    UIView *view2 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 600, 60)];
-    view2.backgroundColor = [UIColor colorWithRed:246/255.0f green:246/255.0f blue:248/255.0f alpha:1];
-    
-    //[self.view insertSubview:background atIndex:1];
+    //UIView *view2 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 600, 60)];
+//    view2.backgroundColor = [UIColor colorWithRed:246/255.0f green:246/255.0f blue:248/255.0f alpha:1];
+//    
 
-    [view1 addSubview:view2];
-    [view2 addSubview:self.headImageView];
+
+    //[view1 addSubview:view2];
+    [view1 addSubview:self.headImageView];
     
     UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 30)];
     title.text = @"Profile";
@@ -93,15 +95,15 @@
     title.textColor = [UIColor blackColor];
     title.font = [UIFont systemFontOfSize:17];
     
-    UIButton * logoutButton = [[UIButton alloc] initWithFrame:CGRectMake(140, 145, 100, 45)];
+    UIButton * logoutButton = [[UIButton alloc] initWithFrame:CGRectMake(140, 95, 100, 45)];
     [logoutButton setImage:[UIImage imageNamed:@"LogoutButton"] forState:UIControlStateNormal];
     [logoutButton addTarget:self action:@selector(logoutButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    [self.view addSubview:title];
+    //[self.view addSubview:title];
     [self.view addSubview:logoutButton];
     
     self.refreshControl = [[UIRefreshControl alloc] init];
-    [self.refreshControl addTarget:self action:@selector(loadObjects) forControlEvents:UIControlEventValueChanged];
+    //[self.refreshControl addTarget:self action:@selector(loadObjects) forControlEvents:UIControlEventValueChanged];
     [self.friendsTableView addSubview:self.refreshControl];
     //[self loadObjects];
     //[self loadUseData];
@@ -129,7 +131,7 @@
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *userRecommendCount =[NSString stringWithFormat:@"%@", [defaults objectForKey:@"recommend_count"]];
-    UILabel *numOfRestaurant = [[UILabel alloc]initWithFrame:CGRectMake(140, 110, 200, 35)];
+    UILabel *numOfRestaurant = [[UILabel alloc]initWithFrame:CGRectMake(140, 60, 200, 35)];
                 numOfRestaurant.text = [NSString stringWithFormat:@"已推薦%@間餐廳", userRecommendCount];
                 numOfRestaurant.textColor = [UIColor grayColor];
                 numOfRestaurant.font = [UIFont systemFontOfSize:13];
@@ -176,7 +178,7 @@
     
     
     // Add numOfFriends Label
-    UILabel *numOfFriends = [[UILabel alloc]initWithFrame:CGRectMake(10, 175, 100, 20)];
+    UILabel *numOfFriends = [[UILabel alloc]initWithFrame:CGRectMake(10, 135, 100, 20)];
     numOfFriends.text = [NSString stringWithFormat:@"%.lu位朋友",self.dataArray.count];
     numOfFriends.textColor = [UIColor lightGrayColor];
     numOfFriends.font = [UIFont systemFontOfSize:13];
@@ -218,12 +220,13 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.backgroundColor =[UIColor clearColor];
-        cell.textLabel.textColor = [UIColor darkGrayColor];
+        cell.textLabel.textColor = [UIColor grayColor];
         cell.textLabel.font =[UIFont systemFontOfSize:17];
         cell.detailTextLabel.textColor = [UIColor lightGrayColor];
         cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
         cell.textLabel.text = [self.dataArray[indexPath.row] objectForKey:@"name"];
         cell.detailTextLabel.text = [NSString stringWithFormat:@"推薦餐廳數: %@", [self.dataArray[indexPath.row] objectForKey:@"recommend_count"]];
+        //cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
         UIImageView * friendsImage = [[UIImageView alloc]initWithFrame:CGRectMake(5, 5, 50, 50)];
         friendsImage.layer.cornerRadius = 25.0f;

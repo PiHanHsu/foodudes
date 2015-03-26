@@ -53,7 +53,7 @@
         [jsondata writeToFile:filePath atomically:YES];
        
         NSDictionary *userDict = [dict objectForKey:@"user"];
-
+        
         NSString *fooduduesID = [NSString stringWithFormat:@"%@", [userDict objectForKey:@"id"]];
         self.mobileID = [NSString stringWithFormat:@"%@", [userDict objectForKey:@"mobile_id"]];
         

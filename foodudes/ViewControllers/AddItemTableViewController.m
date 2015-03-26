@@ -15,7 +15,7 @@
 
 #define API_KEY @"AIzaSyAFsaDn7vyI8pS53zBgYRxu0HfRwYqH-9E"
 
-@interface AddItemTableViewController ()<UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate, UITextViewDelegate,MBProgressHUDDelegate, UISearchBarDelegate, UIImagePickerControllerDelegate>
+@interface AddItemTableViewController ()<UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate, UITextViewDelegate,MBProgressHUDDelegate, UISearchBarDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 {
     MBProgressHUD  *progressHUD;
     NSArray *searchResultPlaces;
@@ -40,7 +40,7 @@
     gs = [[GCGeocodingService alloc] init];
     
     // set up TextFields
-    self.nameTextField =[[UITextField alloc]initWithFrame:CGRectMake(130, 0, 180, 40)];
+    self.nameTextField =[[UITextField alloc]initWithFrame:CGRectMake(120, 0, 180, 40)];
     self.nameTextField.textColor =[UIColor blackColor];
     self.nameTextField.delegate =self;
     self.nameTextField.textAlignment = NSTextAlignmentLeft;
@@ -48,7 +48,7 @@
     self.nameTextField.tag=101;
     
     
-    self.addressTextField =[[UITextField alloc]initWithFrame:CGRectMake(130, 0, 180, 40)];
+    self.addressTextField =[[UITextField alloc]initWithFrame:CGRectMake(120, 0, self.view.frame.size.width -120, 40)];
     self.addressTextField.textColor =[UIColor blackColor];
     self.addressTextField.delegate =self;
     self.addressTextField.textAlignment = NSTextAlignmentLeft;
@@ -56,14 +56,13 @@
     self.addressTextField.tag=102;
     
     
-    self.telTextField =[[UITextField alloc]initWithFrame:CGRectMake(130, 0, 180, 40)];
+    self.telTextField =[[UITextField alloc]initWithFrame:CGRectMake(120, 0, 180, 40)];
     self.telTextField.textColor =[UIColor blackColor];
     self.telTextField.delegate =self;
     self.telTextField.textAlignment = NSTextAlignmentLeft;
     self.telTextField.font =[UIFont systemFontOfSize:13];
     self.telTextField.tag=103;
-//    self.telTextField.text = self.telText;
-//    self.telTextField.placeholder = @"輸入電話";
+
     
     self.contentTextView  =[[UITextView alloc]initWithFrame:CGRectMake(10, 10, self.view.frame.size.width -20, 150 )];
     self.contentTextView.textColor =[UIColor blackColor];
@@ -81,7 +80,7 @@
     
     //餐廳照片
     self.restaurantImageView = [[ UIImageView alloc]initWithFrame:CGRectMake(10, 40, 100, 100)];
-    self.restaurantImageView.backgroundColor = [UIColor greenColor];
+    self.restaurantImageView.backgroundColor = [UIColor lightGrayColor];
     [self.view addSubview:self.restaurantImageView];
     
     
@@ -117,9 +116,9 @@
 
 -(void) viewDidDisappear:(BOOL)animated{
     NSLog(@"viewDidDisappear");
-    self.nameText=@"";
-    self.addressText=@"";
-    self.telText=@"";
+//    self.nameText=@"";
+//    self.addressText=@"";
+//    self.telText=@"";
 }
 
 -(void) hideKeyboard
@@ -173,9 +172,8 @@
 {
     UILabel *headerLabel = [[UILabel alloc]init];
     
-    headerLabel.frame = CGRectMake(0, 0, 300, 35.0);
+    headerLabel.frame = CGRectMake(0, 0, 300, 40.0);
     headerLabel.textColor =[ UIColor grayColor];
-    headerLabel.font = [UIFont systemFontOfSize:12.0f];
     
     if (section ==0)
     {
@@ -197,13 +195,13 @@
     if(section ==1){
         UIView *footerView =[[UIView alloc]initWithFrame:CGRectMake(0, 0,self.view.frame.size.width, 120)];
         UIButton *addcharity = [[UIButton alloc]initWithFrame:CGRectMake(14, 20, (self.view.frame.size.width/2)- 20, 40)];
-        [addcharity setTitle:@"Camera" forState:UIControlStateNormal];
+        [addcharity setTitle:@"新增照片" forState:UIControlStateNormal];
         [addcharity addTarget:self action:@selector(showOptions:) forControlEvents:UIControlEventTouchUpInside];
         [addcharity setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
                 addcharity.backgroundColor = [UIColor greenColor];
         
         UIButton *cancelButton = [[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width/2)+6, 20, (self.view.frame.size.width/2)- 20, 40)];
-        [cancelButton setTitle:@"取消" forState:UIControlStateNormal];
+        [cancelButton setTitle:@"取消 " forState:UIControlStateNormal];
         [cancelButton addTarget:self action:@selector(cancelButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
         [cancelButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         
@@ -230,6 +228,9 @@
     self.placeLat=@"";
     self.placeLng=@"";
     self.contentTextView.text=@"";
+    self.restaurantImageView = [[ UIImageView alloc]initWithFrame:CGRectMake(10, 40, 100, 100)];
+    self.restaurantImageView.backgroundColor = [UIColor lightGrayColor];
+    [self.view addSubview:self.restaurantImageView];
 
 }
 

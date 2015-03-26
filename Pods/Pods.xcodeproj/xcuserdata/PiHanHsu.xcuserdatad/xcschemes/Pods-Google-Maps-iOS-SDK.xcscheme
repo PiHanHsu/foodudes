@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F3A81C41EC45074715FAAB96"
+               BlueprintIdentifier = "B8182F2E2EA8DE26E2ECB0AF"
                BuildableName = "libPods-Google-Maps-iOS-SDK.a"
                BlueprintName = "Pods-Google-Maps-iOS-SDK"
                ReferencedContainer = "container:Pods.xcodeproj">

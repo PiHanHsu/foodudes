@@ -72,7 +72,7 @@
     mapView.frame = CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height-65);
     mapView.myLocationEnabled = YES;
     mapView.settings.myLocationButton = YES;
-    mapView.delegate = self;
+    //mapView.delegate = self;
     
     self.searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 30)];
     self.searchBar.showsSearchResultsButton=YES;
